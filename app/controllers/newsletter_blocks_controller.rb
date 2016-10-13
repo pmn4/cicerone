@@ -1,0 +1,2 @@
+class NewsletterBlocksController < ApplicationController
+end

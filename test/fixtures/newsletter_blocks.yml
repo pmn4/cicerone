@@ -1,0 +1,15 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  type: 
+  message: MyString
+  note: MyString
+  newsletter_id: 
+  beer_id: 
+
+two:
+  type: 
+  message: MyString
+  note: MyString
+  newsletter_id: 
+  beer_id: 
