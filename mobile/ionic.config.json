@@ -1,4 +1,17 @@
 {
-  "name": "cicerone",
-  "app_id": ""
+  "name": "Cicerone: Local Beer News",
+  "app_id": "5662ecc0",
+  "browsers": [
+    {
+      "platform": "android",
+      "browser": "crosswalk",
+      "version": "12.41.296.5"
+    }
+  ],
+  "proxies": [
+    {
+      "path": "/api",
+      "proxyUrl": "http://localhost:8336"
+    }
+  ]
 }

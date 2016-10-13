@@ -1,4 +1,4 @@
-class NewsletterController < ApplicationController
+class NewslettersController < ApplicationController
   respond_to :html, :json
 
   self.resource_param = :newsletter

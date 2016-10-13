@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161010140226) do
+ActiveRecord::Schema.define(version: 20161010185839) do
 
   create_table "brewery_dbs", force: :cascade do |t|
     t.string   "key",        limit: 255
@@ -19,14 +19,33 @@ ActiveRecord::Schema.define(version: 20161010140226) do
     t.text     "response",   limit: 65535
     t.datetime "created_at",               null: false
     t.datetime "updated_at",               null: false
+    t.datetime "deleted_at"
   end
+
+  add_index "brewery_dbs", ["deleted_at"], name: "index_brewery_dbs_on_deleted_at", using: :btree
+
+  create_table "newsletter_blocks", force: :cascade do |t|
+    t.string   "type",          limit: 255
+    t.string   "message",       limit: 255
+    t.string   "note",          limit: 255
+    t.integer  "newsletter_id", limit: 4
+    t.integer  "brewery_db_id", limit: 4
+    t.datetime "created_at",                null: false
+    t.datetime "updated_at",                null: false
+  end
+
+  add_index "newsletter_blocks", ["brewery_db_id"], name: "index_newsletter_blocks_on_brewery_db_id", using: :btree
+  add_index "newsletter_blocks", ["newsletter_id"], name: "index_newsletter_blocks_on_newsletter_id", using: :btree
 
   create_table "newsletters", force: :cascade do |t|
     t.string   "subject",    limit: 255
     t.text     "body",       limit: 65535
     t.datetime "created_at",               null: false
     t.datetime "updated_at",               null: false
+    t.datetime "deleted_at"
   end
+
+  add_index "newsletters", ["deleted_at"], name: "index_newsletters_on_deleted_at", using: :btree
 
   create_table "users", force: :cascade do |t|
     t.string   "email",                  limit: 255, default: "", null: false
@@ -41,9 +60,13 @@ ActiveRecord::Schema.define(version: 20161010140226) do
     t.string   "last_sign_in_ip",        limit: 255
     t.datetime "created_at",                                      null: false
     t.datetime "updated_at",                                      null: false
+    t.datetime "deleted_at"
   end
 
+  add_index "users", ["deleted_at"], name: "index_users_on_deleted_at", using: :btree
   add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree
   add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
 
+  add_foreign_key "newsletter_blocks", "brewery_dbs"
+  add_foreign_key "newsletter_blocks", "newsletters"
 end

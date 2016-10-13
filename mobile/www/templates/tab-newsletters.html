@@ -1,0 +1,16 @@
+<ion-view view-title="Newsletters">
+  <ion-content>
+    <ion-refresher pulling-text="Pull to refresh..." on-refresh="refresh()"></ion-refresher>
+
+    <h1>Newsletters</h1>
+
+    <ion-list>
+      <ion-item class="item-remove-animate item-icon-right" ng-repeat="newsletter in newsletters" type="item-text-wrap" ui-sref="tab.newsletter({ newsletterId: newsletter.id })">
+        <h2>{{ newsletter.subject }}</h2>
+        <p>created: {{ newsletter.created_at }}</p>
+
+        <i class="icon ion-chevron-right icon-accessory"></i>
+      </ion-item>
+    </ion-list>
+  </ion-content>
+</ion-view>

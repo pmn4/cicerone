@@ -5,7 +5,7 @@ class CreateNewsletterBlocks < ActiveRecord::Migration
       t.string :message
       t.string :note
       t.references :newsletter, index: true, foreign_key: true
-      t.references :beer, index: true, foreign_key: true
+      t.references :brewery_db, index: true, foreign_key: true
 
       t.timestamps null: false
     end
