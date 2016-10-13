@@ -7,7 +7,7 @@
     <ion-list>
       <ion-item class="item-remove-animate item-icon-right" ng-repeat="newsletter in newsletters" type="item-text-wrap" ui-sref="tab.newsletter({ newsletterId: newsletter.id })">
         <h2>{{ newsletter.subject }}</h2>
-        <p>created: {{ newsletter.created_at }}</p>
+        <p>created: {{ newsletter.created_at | dateTime }}</p>
 
         <i class="icon ion-chevron-right icon-accessory"></i>
       </ion-item>

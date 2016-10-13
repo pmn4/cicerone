@@ -11,6 +11,7 @@ function isProduction() {
 angular.module('starter', [
   'ionic',
   'starter.controllers',
+  'starter.filters',
   'starter.services',
   // 'ngCordova'
 ])
@@ -120,6 +121,10 @@ angular.module('starter', [
   $urlRouterProvider.otherwise('/tab/dash');
 
 })
+
+.constant("_", window._)
+
+.constant("moment", window.moment)
 
 .constant("AppSettings", {
   apiHost: isProduction() ? "http://beer-news.herokuapp.com" : "/api",
