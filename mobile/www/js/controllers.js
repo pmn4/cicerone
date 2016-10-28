@@ -40,6 +40,8 @@ angular.module("starter.controllers", [])
   };
 })
 
+.controller("HomeController", function () {})
+
 .controller("NewsletterListController", function ($scope, MessageService, Newsletter) {
   $scope.initialized = false;
 

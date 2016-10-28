@@ -13,7 +13,7 @@
         My Newsletters
       </ion-item>
 
-      <ion-item class="item-remove-animate item-icon-right" ng-repeat="newsletter in newsletters" type="item-text-wrap" ui-sref="tab.newsletter({ newsletterId: newsletter.id })">
+      <ion-item class="item-remove-animate item-icon-right light-bg" ng-repeat="newsletter in newsletters" type="item-text-wrap" ui-sref="tab.newsletter({ newsletterId: newsletter.id })">
         <h2>{{ newsletter.subject }}</h2>
         <p>created: {{ newsletter.created_at | dateTime }}</p>
 
