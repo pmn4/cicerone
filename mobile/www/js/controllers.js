@@ -23,6 +23,10 @@ angular.module("starter.controllers", [])
     initialized: false
   };
 
+  $rootScope.features = {
+    scanner: window.cordova && cordova.plugins && cordova.plugins.barcodeScanner
+  };
+
   $rootScope.touchDevice = ('ontouchstart' in document.documentElement);
 
   $scope.indicateAjaxing = function (isAjaxing) {
@@ -97,7 +101,7 @@ angular.module("starter.controllers", [])
   };
 })
 
-.controller("NewsletterDetailController", function ($scope, $state, $stateParams, $ionicModal, MessageService, Newsletter, Beer) {
+.controller("NewsletterDetailController", function ($scope, $state, $stateParams, $ionicModal, $cordovaBarcodeScanner, MessageService, Newsletter, Beer) {
   $scope.initialized = false;
   $scope.newsletterId = $stateParams.newsletterId;
 
@@ -138,7 +142,9 @@ angular.module("starter.controllers", [])
     $searchScope.modal = modal;
   });
 
-  $scope.showSearchForm = function () {
+  $scope.showSearchForm = function (isUpcSearch) {
+    $searchScope.isUpcSearch = isUpcSearch;
+    $searchScope.initialized = !!$searchScope.searchResults;
     $searchScope.modal.show();
   };
 
@@ -146,7 +152,6 @@ angular.module("starter.controllers", [])
     $searchScope.modal.hide();
   };
 
-  $searchScope.initialized = false;
   $searchScope.searching = 0;
   function search() {
     if (!$searchScope.formData || !$searchScope.formData.search) { return; }
@@ -172,10 +177,39 @@ angular.module("starter.controllers", [])
     $scope.hideSearchForm();
 
     $scope.addBlock("beer", $searchScope.formData.beerKey);
+  };
+
+  /////////// debug code ///////////
+  $scope.upc = { code: "" };
+  $scope.$watch("upc.code", function (code) {
+    if (!code) { return; }
+
+    findByUpc(code);
+  });
+  //////// (end) debug code ////////
+
+  function findByUpc(barcodeData) {
+    Beer.findByUpc(barcodeData)
+      .then(function (response) {
+        if (response.data && response.data.length === 1) {
+          return $scope.addBlock("beer", response.data[0].response.id);
+        }
+
+        $searchScope.searchResults = response.data;
+        $scope.showSearchForm(true);
+      }, function (response) {
+        MessageService.responseError(response);
+      });
   }
 
   $scope.scan = function () {
-    $scope.addBlock("beer", "Sg96qS") // @todo: debugging
+    $cordovaBarcodeScanner
+      .scan()
+      .then(function (barcodeData) {
+        findByUpc(barcodeData);
+      }, function (error) {
+        MessageService.error(error);
+      });
   };
 
   $scope.search = function () {

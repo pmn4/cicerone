@@ -1,19 +1,25 @@
 <ion-modal-view>
   <ion-header-bar class="bar-positive item-input-inset">
-    <label class="item-input-wrapper">
-      <i class="icon ion-ios-search placeholder-icon"></i>
+    <div ng-show="isUpcSearch">
+      Search Results
+    </div>
 
-      <input
-        ng-model="formData.search"
-        type="search"
-        placeholder="Search"
-        ng-model-options="{ debounce: 1000 }"
-      />
-    </label>
+    <div ng-hide="isUpcSearch">
+      <label class="item-input-wrapper">
+        <i class="icon ion-ios-search placeholder-icon"></i>
 
-    <button class="button button-clear">
-      Cancel
-    </button>
+        <input
+          ng-model="formData.search"
+          type="search"
+          placeholder="Search"
+          ng-model-options="{ debounce: 1000 }"
+        />
+      </label>
+
+      <button class="button button-clear">
+        Cancel
+      </button>
+    </div>
   </ion-header-bar>
 
   <ion-footer-bar>
@@ -37,6 +43,10 @@
     <div ng-show="initialized">
       <p class="assertive" ng-hide="searchResults">
         No search results found for "{{ formData.search }}."
+      </p>
+
+      <p ng-show="searchResults">
+        Search results:
       </p>
 
       <ion-radio

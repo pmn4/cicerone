@@ -1,3 +1,37 @@
+class ApiError < StandardError
+  attr_accessor :code
+
+  def initialize(code, message)
+    super(message)
+
+    self.code = code
+  end
+
+  def as_response
+    { text: message, status: code, content_type: 'text/plain' }
+  end
+
+  class << self
+    def from_response(response)
+      body = response_body(response.body)
+
+      new(response.code, body[:errorMessage])
+    end
+
+    def response_body(body)
+      JSON.parse(body).symbolize_keys
+    rescue
+      {}
+    end
+  end
+end
+
+class OfflineError < ApiError
+  def initialize(*)
+    super(0, 'Server is Offline')
+  end
+end
+
 class BreweryDb < ActiveRecord::Base
   extend Base
 
@@ -78,13 +112,13 @@ class BreweryDb < ActiveRecord::Base
 
     def ensure_success(response)
       raise OfflineError if response.code.zero?
-      raise StandardError, response.body unless response.code.between?(200, 299)
-      # raise RsoStandardError, response.body if response.code == 400
-      # raise RsoNotAuthorizedError, response.body if response.code == 401
-      # raise RsoPaymentRequiredError, response.body if response.code == 402
-      # raise RsoStandardError, response.body if response.code == 404
+      raise ApiError.from_response(response) unless response.code.between?(200, 299)
+      # raise ApiError, response.body if response.code == 400
+      # raise ApiNotAuthorizedError, response.body if response.code == 401
+      # raise PaymentRequiredError, response.body if response.code == 402
+      # raise ApiNotFoundError, response.body if response.code == 404
       # raise ImplementationError, response.body if response.code == 405
-      # raise RsoServerError, response.body if response.code == 500
+      # raise ApiServerError, response.body if response.code == 500
     end
 
     def get(url, params = {})

@@ -22,11 +22,20 @@
         <em>there is no content in this newsletter yet</em>
       </ion-item>
 
+      <!-- uncomment to test search by upc
+        <input ng-model="upc.code" ng-model-options="{ debounce: 1000 }" />
+      -->
+
       <div class="padding">
         <h5>Add more to this newsletter:</h5>
 
         <div class="button-bar">
-          <button type="button" class="button positive-bg light" ng-click="scan()">
+          <button
+            type="button"
+            class="button positive-bg light"
+            ng-click="scan()"
+            ng-disabled="!features.scanner"
+          >
             <i class="icon ion-ios-barcode-outline"></i>
 
             <span class="button-title">
@@ -50,6 +59,12 @@
             </span>
           </button>
         </div>
+
+        <p class="assertive" ng-hide="features.scanner">
+          <em>
+            Barcode scanning available in app only.
+          </em>
+        </p>
       </div>
 
       <p>created: {{ newsletter.created_at | dateTime }}</p>

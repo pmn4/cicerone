@@ -15,4 +15,6 @@ Rails.application.routes.draw do
   end
 
   resources :beers, controller: :brewery_db_beers
+
+  resources :upcs, only: :index, controller: :brewery_db_upcs
 end

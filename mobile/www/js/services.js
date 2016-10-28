@@ -93,6 +93,16 @@ angular.module("starter.services", [])
         method: "GET",
         url: AppSettings.apiHost + "/beers/" + id
       });
+    },
+
+    findByUpc: function (upc) {
+      return $http({
+        method: "GET",
+        url: AppSettings.apiHost + "/upcs",
+        params: {
+          code: upc
+        }
+      });
     }
   };
 })

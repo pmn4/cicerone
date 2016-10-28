@@ -3,6 +3,8 @@ class BreweryDbController < ApplicationController
     resources = find_resources
 
     respond_with(resources)
+  rescue ApiError => e
+    render e.as_response
   end
 
   # id should be the breweryDb id
@@ -10,6 +12,8 @@ class BreweryDbController < ApplicationController
     resource = find_resource(params[:id])
 
     respond_with(resource)
+  rescue ApiError => e
+    render e.as_response
   end
 
   def create; raise NotImplementedError; end

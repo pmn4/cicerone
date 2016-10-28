@@ -14,7 +14,7 @@ angular.module('starter', [
   'starter.directives',
   'starter.filters',
   'starter.services',
-  // 'ngCordova'
+  'ngCordova'
 ])
 
 .run(function ($ionicPlatform, $http) {
