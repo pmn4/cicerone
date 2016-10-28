@@ -196,8 +196,8 @@ angular.module("starter.controllers", [])
   });
   //////// (end) debug code ////////
 
-  function findByUpc(barcodeData) {
-    Beer.findByUpc(barcodeData)
+  function findByUpc(upc) {
+    Beer.findByUpc(upc)
       .then(function (response) {
         if (response.data && response.data.length === 1) {
           return $scope.addBlock("beer", response.data[0].response.id);
@@ -214,7 +214,7 @@ angular.module("starter.controllers", [])
     $cordovaBarcodeScanner
       .scan()
       .then(function (barcodeData) {
-        findByUpc(barcodeData);
+        return findByUpc(barcodeData.text);
       }, function (error) {
         MessageService.error(error);
       });
