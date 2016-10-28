@@ -1,0 +1,58 @@
+<div>
+  <ion-list ng-show="formData.contentType">
+    <label class="item item-input item-floating-label" ng-class="{ 'validation-error': formElement.note.$invalid && formElement.note.$dirty }">
+      <span class="input-label">
+        Note to self
+      </span>
+
+      <input
+        name="note"
+        ng-model="formData.note"
+        type="text"
+        ng-required="true"
+        placeholder="Note to Self" />
+    </label>
+
+    <label class="item item-input item-floating-label" ng-class="{ 'validation-error': formData.contentType == 'beer' && formElement.beerKey.$invalid && formElement.beerKey.$dirty }" ng-show="formData.contentType == 'beer'">
+      <span class="input-label">
+        (Brewery DB) Beer Id
+      </span>
+
+      <input
+        name="beerKey"
+        ng-model="formData.beer_key"
+        type="text"
+        ng-required="{{ formData.contentType == 'beer' }}"
+        placeholder="(Brewery DB) Beer Id" />
+    </label>
+
+    <div class="item" ng-show="formData.contentType == 'beer'">
+      <div>
+        How much ya got?
+      </div>
+
+      <div class="radio-set items-4">
+        <label class="radio-item" ng-repeat="quantity in quantityOptions" ng-class="{ checked: formData.quantity_id == quantity.id }">
+          <input type="radio" name="quantityId" ng-model="formData.quantity_id" ng-value="{{ quantity.id }}" ng-checked="formData.quantity_id == quantity.id">
+
+          {{ quantity.label }}
+        </label>
+      </div>
+    </div>
+
+    <label class="item item-input item-floating-label" ng-show="formData.contentType == 'content'">
+      <span class="input-label">
+        Add some text...
+      </span>
+
+      <textarea
+        class="light-bg"
+        name="message"
+        ng-model="formData.message"
+        type="text"
+        placeholder="Add some text..."
+        rows="5"
+      ></textarea>
+    </label>
+  </ion-list>
+</div>

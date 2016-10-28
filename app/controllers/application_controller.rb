@@ -1,31 +1,37 @@
 class ApplicationController < ActionController::Base
   class PermissionError < StandardError; end
 
+  respond_to :html, :json
+
+  before_action :prepare_brewery_db
+
   # Prevent CSRF attacks by raising an exception.
   # For APIs, you may want to use :null_session instead.
-  protect_from_forgery with: :exception
+  protect_from_forgery \
+    with: :null_session,
+    if: Proc.new { |c| c.request.format == 'application/json' }
 
   class << self
-    attr_accessor :model_class, :application_property, :resource_param
+    attr_accessor :model_class, :resource_param
   end
 
   def index
     resources = list_resources(params)
 
-    respond_with(resources)
+    respond_with resources.as_json(as_json_list_options)
   end
 
   def create
     resource = self.class.model_class.new(resource_params)
-    resource.created_by = current_user
+    # resource.created_by = current_user
 
-    unless resource.createable_by?(current_user, resource_params)
-      raise PermissionError, :create
-    end
+    # unless resource.createable_by?(current_user, resource_params)
+    #   raise PermissionError, :create
+    # end
 
     create_resource!(resource, resource_params)
 
-    respond_with(resource)
+    respond_with resource.as_json(as_json_options)
   rescue PermissionError => e
     permission_error!(resource, e)
   rescue ActiveRecord::RecordInvalid => e
@@ -35,13 +41,13 @@ class ApplicationController < ActionController::Base
   end
 
   def show
-    resource = find_resource(params[:id], includes)
+    resource = find_resource(params[:id])
 
-    unless resource.readable_by?(current_user)
-      raise PermissionError, :read
-    end
+    # unless resource.readable_by?(current_user)
+    #   raise PermissionError, :read
+    # end
 
-    respond_with(resource)
+    respond_with resource.as_json(as_json_options)
   rescue PermissionError => e
     permission_error!(resource, e.message)
   rescue ActiveRecord::RecordNotFound => e
@@ -49,13 +55,11 @@ class ApplicationController < ActionController::Base
   end
 
   def update
-    resource =
-      application.send(application_property)
-        .find(params[:id])
+    resource = self.class.model_class.find(params[:id])
 
     update_resource!(resource, resource_params)
 
-    respond_with(resource)
+    respond_with resource.as_json(as_json_options)
   rescue PermissionError => e
     permission_error!(resource, e)
   rescue ActiveRecord::RecordInvalid => e
@@ -69,9 +73,9 @@ class ApplicationController < ActionController::Base
   def destroy
     resource = self.class.model_class.find(params[:id])
 
-    unless resource.deletable_by?(current_user)
-      raise PermissionError, :delete
-    end
+    # unless resource.deletable_by?(current_user)
+    #   raise PermissionError, :delete
+    # end
 
     destroy_resource!(resource)
 
@@ -89,6 +93,12 @@ class ApplicationController < ActionController::Base
 
   protected
 
+  def as_json_options
+  end
+
+  def as_json_list_options
+  end
+
   def resource_params
     params
       .require(self.class.resource_param)
@@ -103,7 +113,7 @@ class ApplicationController < ActionController::Base
     resource.save!
   end
 
-  def find_resource(resource_id, _params)
+  def find_resource(resource_id)
     self.class.model_class.find(resource_id)
   end
 
@@ -146,5 +156,9 @@ class ApplicationController < ActionController::Base
         render(action: 'new')
       end
     end
+  end
+
+  def prepare_brewery_db
+    BreweryDb.token = 'e849e0b752f3317ef5561324884f5271'
   end
 end

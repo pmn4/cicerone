@@ -15,9 +15,46 @@ $royal:                           #886aea !default;
 $dark:                            #444 !default;
 */
 
+$light: #f3f0ef;
+$base-background-color: $light;
+$button-default-border: #b2b2b2; // $button-stable-border
+
 // The path for our ionicons font files, relative to the built CSS in www/css
-$ionicons-font-path: "../lib/ionic/fonts" !default;
+$ionicons-font-path: '../lib/ionic/fonts' !default;
 
 // Include all of Ionic
-@import "../www/lib/ionic/scss/ionic";
+@import '../www/lib/ionic/scss/ionic';
 
+// there is a bug in the ionic stylesheet which overrides
+$button-default-border: #b2b2b2; // $button-stable-border
+
+@import
+	'compass',
+	'animations',
+	'radio-set',
+	'toast';
+
+.button-bar {
+	.button {
+		border-color: $button-light-border;
+		line-height: 1.1;
+
+		.button-title {
+			display: block;
+			margin: 0 0 5px;
+			font-size: $tabs-text-font-size-side-icon;
+			line-height: $tabs-text-font-size;
+		}
+
+		.icon {
+			display: block;
+			margin: 0 auto;
+			height: $tabs-icon-size;
+			font-size: $tabs-icon-size;
+
+			&:before {
+				line-height: 34px;
+			}
+		}
+	}
+}

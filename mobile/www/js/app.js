@@ -11,6 +11,7 @@ function isProduction() {
 angular.module('starter', [
   'ionic',
   'starter.controllers',
+  'starter.directives',
   'starter.filters',
   'starter.services',
   // 'ngCordova'
@@ -75,6 +76,16 @@ angular.module('starter', [
     }
   })
 
+  .state('tab.newsletterNew', {
+    url: '/newsletters/new',
+    views: {
+      'tab-newsletters': {
+        templateUrl: 'templates/newsletter-edit.html',
+        controller: 'NewsletterNewController'
+      }
+    }
+  })
+
   .state('tab.newsletter', {
     url: '/newsletters/:newsletterId',
     views: {
@@ -85,22 +96,32 @@ angular.module('starter', [
     }
   })
 
-  .state('tab.newsletter-beers', {
-    url: '/newsletters/:newsletterId/beers',
+  .state('tab.newsletterBlocks', {
+    url: '/newsletters/:newsletterId/blocks',
     views: {
       'tab-newsletters': {
-        templateUrl: 'templates/newsletter-beer-list.html',
-        controller: 'NewsletterBeerListController'
+        templateUrl: 'templates/block-list.html',
+        controller: 'NewsletterBlockListController'
       }
     }
   })
 
-  .state('tab.newsletter-beer', {
-    url: '/newsletters/:newsletterId/beers/:beerId',
+  .state('tab.newsletterBlockNew', {
+    url: '/newsletters/:newsletterId/block/new?:contentType&:beerKey',
     views: {
       'tab-newsletters': {
-        templateUrl: 'templates/newsletter-beer-detail.html',
-        controller: 'NewsletterBeerDetailController'
+        templateUrl: 'templates/block-edit.html',
+        controller: 'NewsletterBlockNewController'
+      }
+    }
+  })
+
+  .state('tab.newsletterBlock', {
+    url: '/newsletters/:newsletterId/block/:blockId',
+    views: {
+      'tab-newsletters': {
+        templateUrl: 'templates/block-detail.html',
+        controller: 'NewsletterBlockDetailController'
       }
     }
   })
@@ -127,7 +148,8 @@ angular.module('starter', [
 .constant("moment", window.moment)
 
 .constant("AppSettings", {
-  apiHost: isProduction() ? "http://beer-news.herokuapp.com" : "/api",
+  // apiHost: isProduction() ? "http://beer-news.herokuapp.com" : "/api",
+  apiHost: isProduction() ? "http://localhost:8336" : "/api",
   throttleRate: 20 * 1000, // 20 seconds
   gamesRefreshRate: 2 * 60 * 1000, // 2 minutes
   scoreboardsRefreshRate: 5 * 60 * 1000, // 5 minutes

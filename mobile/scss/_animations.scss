@@ -1,0 +1,123 @@
+@mixin keyframes($animationName) {
+  @-webkit-keyframes #{$animationName} {
+    @content;
+  }
+  @-moz-keyframes #{$animationName} {
+    @content;
+  }
+  @-o-keyframes #{$animationName} {
+    @content;
+  }
+  @keyframes #{$animationName} {
+    @content;
+  }
+}
+
+@include keyframes(bounce-right-with-delay) {
+  0%, 50%, 60%, 76.5%, 90%, 100% {
+    @include animation-timing-function(cubic-bezier(0.215, 0.610, 0.355, 1.000));
+    @include translateX(0);
+  }
+
+  70%, 71.5% {
+    @include animation-timing-function(cubic-bezier(0.755, 0.050, 0.855, 0.060));
+    @include translateX(30px);
+  }
+
+  85% {
+    @include animation-timing-function(cubic-bezier(0.755, 0.050, 0.855, 0.060));
+    @include translateX(15px);
+  }
+
+  95% {
+    @include translateX(4px);
+  }
+}
+
+@include keyframes(bounce-in-up) {
+  from, 60%, 75%, 90%, to {
+    @include animation-timing-function(cubic-bezier(0.215, 0.610, 0.355, 1.000));
+  }
+
+  from {
+    @include opacity(0);
+    @include transform(translateY(3000px));
+  }
+
+  60% {
+    @include opacity(1);
+    @include transform(translateY(-20px));
+  }
+
+  75% {
+    @include transform(translateY(10px));
+  }
+
+  90% {
+    @include transform(translateY(-5px));
+  }
+
+  to {
+    @include transform(translateY(0));
+  }
+}
+
+@include keyframes(bounce-out-down) {
+  20% {
+    @include transform(translateY(10px));
+  }
+
+  40%, 45% {
+    @include opacity(1);
+    @include transform(translateY(-20px));
+  }
+
+  to {
+    @include opacity(0);
+    @include transform(translateY(2000px));
+  }
+}
+
+@include keyframes(bounce-in-down) {
+  from, 60%, 75%, 90%, to {
+    @include animation-timing-function(cubic-bezier(0.215, 0.610, 0.355, 1.000));
+  }
+
+  0% {
+    @include opacity(0);
+    @include transform(translateY(-3000px));
+  }
+
+  60% {
+    @include opacity(1);
+    @include transform(translateY(25px));
+  }
+
+  75% {
+    @include transform(translateY(-10px));
+  }
+
+  90% {
+    @include transform(translateY(5px));
+  }
+
+  to {
+    @include transform(none);
+  }
+}
+
+@include keyframes(bounce-out-up) {
+  20% {
+    @include transform(translateY(-10px));
+  }
+
+  40%, 45% {
+    @include opacity(1);
+    @include transform(translateY(20px));
+  }
+
+  to {
+    @include opacity(0);
+    @include transform(translateY(-2000px));
+  }
+}

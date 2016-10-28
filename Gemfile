@@ -6,6 +6,8 @@ source 'https://rubygems.org'
 gem 'rails', '4.2.7'
 # Use sqlite3 as the database for Active Record
 gem 'mysql2'
+# http requests (to external API)
+gem 'typhoeus'
 # deleted_at instead of SQL DELETE
 gem 'paranoia', '~> 2.0'
 # User management

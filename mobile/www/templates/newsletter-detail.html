@@ -1,0 +1,58 @@
+<ion-view view-title="{{ newsletter.subject }}">
+  <ion-content padding="true">
+    <ion-refresher pulling-text="Pull to refresh..." on-refresh="refresh()"></ion-refresher>
+
+    <ion-list>
+      <ion-item class="item-divider">
+        Included in this Newsletter
+      </ion-item>
+
+      <ion-item
+        class="stable-bg item-text-wrap"
+        ng-repeat="block in newsletter.blocks">
+        <newsletter-block block="block"></newsletter-block>
+
+        <!--
+        quantity (single beer, 6-pack, case, growler, newspaper for content blocks,
+        name
+        -->
+      </ion-item>
+
+      <ion-item class="item-wrap-text" ng-hide="newsletter.blocks.length">
+        <em>there is no content in this newsletter yet</em>
+      </ion-item>
+
+      <div class="padding">
+        <h5>Add more to this newsletter:</h5>
+
+        <div class="button-bar">
+          <button type="button" class="button positive-bg light" ng-click="scan()">
+            <i class="icon ion-ios-barcode-outline"></i>
+
+            <span class="button-title">
+              Scan Beer
+            </span>
+          </button>
+
+          <button type="button" class="button positive-bg light" ng-click="search()">
+            <i class="icon ion-search"></i>
+
+            <span class="button-title">
+              Search Beer
+            </span>
+          </button>
+
+          <button type="button" class="button positive-bg light" ng-click="text()">
+            <i class="icon ion-edit"></i>
+
+            <span class="button-title">
+              Add Text
+            </span>
+          </button>
+        </div>
+      </div>
+
+      <p>created: {{ newsletter.created_at | dateTime }}</p>
+    </ion-list>
+  </ion-content>
+</ion-view>

@@ -24,18 +24,74 @@ angular.module("starter.services", [])
       });
     },
 
-    update: function (resourceId, resourceObj) {
-      return $http({
-        method: "PUT",
-        url: AppSettings.apiHost + "/newsletters/" + resourceId,
-        data: { newsletter: resourceObj }
-      });
-    },
-
     destroy: function (resourceId) {
       return $http({
         method: "DELETE",
         url: AppSettings.apiHost + "/newsletters/" + resourceId
+      });
+    },
+
+    allBlocks: function (resourceId) {
+      return $http({
+        method: "GET",
+        url: AppSettings.apiHost + "/newsletters/" + resourceId + "/blocks"
+      });
+    },
+
+    createBeerBlock: function (resourceId, resourceObj) {
+      return $http({
+        method: "POST",
+        url: AppSettings.apiHost + "/newsletters/" + resourceId + "/beer_blocks",
+        data: { newsletter_block: resourceObj }
+      });
+    },
+
+    createContentBlock: function (resourceId, resourceObj) {
+      return $http({
+        method: "POST",
+        url: AppSettings.apiHost + "/newsletters/" + resourceId + "/content_blocks",
+        data: { newsletter_block: resourceObj }
+      });
+    },
+
+    findBlock: function (resourceId, blockId) {
+      return $http({
+        method: "GET",
+        url: AppSettings.apiHost + "/newsletters/" + resourceId + "/blocks/" + blockId
+      });
+    },
+
+    updateBlock: function (resourceId, resourceObj) {
+      return $http({
+        method: "PUT",
+        url: AppSettings.apiHost + "/newsletters/" + resourceId + "/blocks/" + blockId,
+        data: { newsletter_block: resourceObj }
+      });
+    },
+
+    destroyBlock: function (resourceId, blockId) {
+      return $http({
+        method: "DELETE",
+        url: AppSettings.apiHost + "/newsletters/" + resourceId + "/blocks/" + blockId
+      });
+    }
+  };
+})
+
+.factory("Beer", function ($http, AppSettings) {
+  return {
+    all: function (params) {
+      return $http({
+        method: "GET",
+        url: AppSettings.apiHost + "/beers",
+        params: params
+      });
+    },
+
+    find: function (id) {
+      return $http({
+        method: "GET",
+        url: AppSettings.apiHost + "/beers/" + id
       });
     }
   };

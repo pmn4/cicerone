@@ -23,7 +23,7 @@ module Base
     end
 
     def serializable_hash(options = {})
-      options ||= {}
+      options = options.try(:clone) || {}
 
       excepts = [options[:except]].flatten +
         %i(deleted_at migration_id).freeze

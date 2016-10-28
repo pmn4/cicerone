@@ -1,0 +1,33 @@
+<ion-view view-title="Add to Newsletter">
+  <form name="editForm" ng-submit="save(editForm)">
+    <ion-footer-bar>
+      <div class="button-bar">
+        <button
+          type="button"
+          class="button button-stable"
+          ng-click="cancel()">
+          Cancel
+        </button>
+
+        <button
+          type="submit"
+          class="button button-positive"
+          ng-disabled="editForm.$pristine || editForm.$invalid">
+          Save
+        </button>
+      </div>
+    </ion-footer-bar>
+
+    <ion-content padding="true" class="has-footer">
+      <h5>
+        What would you like to do?
+      </h5>
+
+      <newsletter-block-form
+        newsletter-id="newsletterId"
+        form-data="formData"
+        form-element="editForm"
+      ></newsletter-block-form>
+    </ion-content>
+  </form>
+</ion-view>

@@ -1,0 +1,19 @@
+<div class="row row-no-padding">
+	<div class="col col-20">
+		<img height="auto" width="90%" ng-src="{{ beer.response.labels.icon }}" />
+	</div>
+
+	<div class="col col-80">
+		<h3>
+			{{ beer.response.nameDisplay }}
+
+			<em ng-hide="beer.response.nameDisplay">
+				(no beer selected)
+			</em>
+		</h3>
+
+		<p>
+			{{ beer.response.breweries[0].name }}
+		</p>
+	</div>
+</div>

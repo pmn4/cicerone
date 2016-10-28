@@ -1,0 +1,17 @@
+<div ui-sref="tab.newsletterBlock({ newsletterId: block.newsletter_id, blockId: block.id })">
+	<div ng-switch="block.block_type">
+		<newsletter-block-beer
+			block="block"
+			ng-switch-when="Beer"
+		></newsletter-block-beer>
+
+		<newsletter-block-content
+			block="block"
+			ng-switch-when="Content"
+		></newsletter-block-content>
+	</div>
+
+	<p ng-show="block.note">
+		note to self: {{ block.note }}
+	</p>
+</div>

@@ -1,0 +1,67 @@
+.toast-message {
+	$padding-vertical: 10px;
+	$padding-horizontal: 50px;
+
+	position: fixed;
+	z-index: 1000; // #thumbintheair
+
+	@include animation-duration(1.0s);
+	@include animation-fill-mode(both);
+
+	.content {
+		padding: $padding-vertical $padding-horizontal;
+		border: 1px solid transparent;
+		border-radius: 2em;
+		text-align: center;
+	}
+
+	@media (min-width: $grid-responsive-sm-break + 1) {
+		top: $bar-height;
+		left: 50%;
+		margin-top: 10px;
+		max-width: 50%;
+
+		@include animation-name(bounce-out-up);
+		&.show {
+			@include animation-name(bounce-in-down);
+		}
+
+		.content {
+			@include translateX(-50%);
+		}
+	}
+
+	@media (max-width: $grid-responsive-sm-break) {
+		bottom: $bar-height;
+		left: 5%;
+		right: 5%;
+
+		@include animation-name(bounce-out-down);
+		&.show {
+			@include animation-name(bounce-in-up);
+		}
+	}
+
+	// case "error": return "assertive";
+	// case "warning": return "energized";
+	// case "success": return "balanced";
+	// case "info": return "positive";
+	// case "debug": return "stable";
+	$colors: (
+		assertive: $assertive,
+		energized: $energized,
+		balanced: $balanced,
+		positive: $positive,
+		stable: $stable
+	);
+
+	@each $style-name, $color in $colors {
+		&.#{ $style-name } {
+			.content {
+				border-color: $color;
+				background-color: rgba(mix($color, $base-background-color, 20%), 0.9);
+				color: $dark;
+			}
+		}
+	}
+}

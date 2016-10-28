@@ -1,0 +1,7 @@
+<ion-view view-title="{{ newsletter.subject }}">
+  <ion-content padding="true">
+    <ion-refresher pulling-text="Pull to refresh..." on-refresh="refresh()"></ion-refresher>
+
+		<pre>{{ block | json }}</pre>
+  </ion-content>
+</ion-view>

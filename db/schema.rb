@@ -11,14 +11,14 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161010185839) do
+ActiveRecord::Schema.define(version: 20161016053146) do
 
   create_table "brewery_dbs", force: :cascade do |t|
-    t.string   "key",        limit: 255
-    t.string   "uri",        limit: 255
-    t.text     "response",   limit: 65535
-    t.datetime "created_at",               null: false
-    t.datetime "updated_at",               null: false
+    t.string   "key",           limit: 255
+    t.string   "uri",           limit: 255
+    t.text     "response_json", limit: 65535
+    t.datetime "created_at",                  null: false
+    t.datetime "updated_at",                  null: false
     t.datetime "deleted_at"
   end
 
@@ -32,10 +32,12 @@ ActiveRecord::Schema.define(version: 20161010185839) do
     t.integer  "brewery_db_id", limit: 4
     t.datetime "created_at",                null: false
     t.datetime "updated_at",                null: false
+    t.integer  "quantity_id",   limit: 4
   end
 
   add_index "newsletter_blocks", ["brewery_db_id"], name: "index_newsletter_blocks_on_brewery_db_id", using: :btree
   add_index "newsletter_blocks", ["newsletter_id"], name: "index_newsletter_blocks_on_newsletter_id", using: :btree
+  add_index "newsletter_blocks", ["quantity_id"], name: "index_newsletter_blocks_on_quantity_id", using: :btree
 
   create_table "newsletters", force: :cascade do |t|
     t.string   "subject",    limit: 255
@@ -46,6 +48,14 @@ ActiveRecord::Schema.define(version: 20161010185839) do
   end
 
   add_index "newsletters", ["deleted_at"], name: "index_newsletters_on_deleted_at", using: :btree
+
+  create_table "quantities", force: :cascade do |t|
+    t.string   "name",       limit: 255
+    t.integer  "quantity",   limit: 4
+    t.string   "label",      limit: 255
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
+  end
 
   create_table "users", force: :cascade do |t|
     t.string   "email",                  limit: 255, default: "", null: false

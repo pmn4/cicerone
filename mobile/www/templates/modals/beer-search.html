@@ -1,0 +1,50 @@
+<ion-modal-view>
+  <ion-header-bar class="bar-positive item-input-inset">
+    <label class="item-input-wrapper">
+      <i class="icon ion-ios-search placeholder-icon"></i>
+
+      <input
+        ng-model="formData.search"
+        type="search"
+        placeholder="Search"
+        ng-model-options="{ debounce: 1000 }"
+      />
+    </label>
+
+    <button class="button button-clear">
+      Cancel
+    </button>
+  </ion-header-bar>
+
+  <ion-footer-bar>
+    <div class="button-bar">
+      <button
+        class="button button-stable"
+        ng-click="cancel()">
+        Cancel
+      </button>
+
+      <button
+        class="button button-positive"
+        ng-disabled="!formData.beerKey"
+        ng-click="chooseBeer()">
+        Save
+      </button>
+    </div>
+  </ion-footer-bar>
+
+  <ion-content class="padding" overflow-scroll="true">
+    <div ng-show="initialized">
+      <p class="assertive" ng-hide="searchResults">
+        No search results found for "{{ formData.search }}."
+      </p>
+
+      <ion-radio
+        ng-model="formData.beerKey"
+        ng-repeat="beer in searchResults"
+        ng-value="beer.response.id">
+        <beer-list-item beer="beer"></beer-list-item>
+      </ion-radio>
+    </div>
+  </ion-content>
+</ion-modal-view>
