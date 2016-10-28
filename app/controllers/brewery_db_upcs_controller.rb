@@ -4,10 +4,10 @@ require_relative '../models/upc'
 class BreweryDbUpcsController < BreweryDbController
   self.model_class = Upc
 
-  protected
+  # protected
 
-  # debug
-  def find_resources
-    Beer.source_list(name: '*peron*')
-  end
+  # # debug
+  # def find_resources
+  #   Beer.source_list(name: '*peron*')
+  # end
 end

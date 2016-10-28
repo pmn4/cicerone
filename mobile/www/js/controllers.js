@@ -1,6 +1,6 @@
 angular.module("starter.controllers", [])
 
-.controller("AppController", function ($rootScope, $scope) {
+.controller("AppController", function ($rootScope, $scope, $ionicPlatform, $window, $timeout, $cordovaSplashscreen) {
   // $rootScope.apiAuth = {};
   // $rootScope.$watch("apiAuth.accessToken", function (token) {
   //   if (!token) { return; }
@@ -23,9 +23,13 @@ angular.module("starter.controllers", [])
     initialized: false
   };
 
-  $rootScope.features = {
-    scanner: window.cordova && cordova.plugins && cordova.plugins.barcodeScanner
-  };
+  function checkFeatures() {
+    $rootScope.features = {
+      hasScanner: $window.cordova && cordova.plugins && !!cordova.plugins.barcodeScanner
+    };
+  }
+  checkFeatures();
+  $ionicPlatform.ready(checkFeatures);
 
   $rootScope.touchDevice = ('ontouchstart' in document.documentElement);
 
@@ -38,6 +42,8 @@ angular.module("starter.controllers", [])
 
     return isAjaxing;
   };
+
+  $timeout(function () { $cordovaSplashscreen.hide(); });
 })
 
 .controller("HomeController", function () {})
