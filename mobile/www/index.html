@@ -35,11 +35,11 @@
     <script src="js/filters.js"></script>
     <script src="js/services.js"></script>
   </head>
-  <body ng-app="starter">
+  <body ng-app="starter" ng-class="{ 'performing-action': indicators.ajaxing }">
     <!--
       The nav bar that will be updated as we navigate between views.
     -->
-    <ion-nav-bar class="bar-stable">
+    <ion-nav-bar class="bar-stable action-indicator-bar">
       <ion-nav-back-button>
       </ion-nav-back-button>
     </ion-nav-bar>

@@ -1,0 +1,13 @@
+@import 'animations';
+
+.action-indicator-bar {
+	border-bottom: 1px solid transparent;
+
+	$duration: 4s;
+	$initial-color: hsl(0, 100%, 50%);
+	.performing-action &,
+	&.performing-action {
+		border-bottom-color: $initial-color;
+		@include animation(rainbow-border-color $duration linear infinite);
+	}
+}
