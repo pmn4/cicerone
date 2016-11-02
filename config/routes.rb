@@ -4,6 +4,7 @@ Dir.glob("#{app_root}/../app/controllers/**/*_controller.rb", &method(:require))
 RESOURCE_ROUTES = %i(index create show update destroy).freeze
 
 Rails.application.routes.draw do
+  use_doorkeeper
   devise_for :users
 
   resources :newsletters do

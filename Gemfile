@@ -12,6 +12,8 @@ gem 'typhoeus'
 gem 'paranoia', '~> 2.0'
 # User management
 gem 'devise'
+# OAuth
+gem 'doorkeeper'
 # Use SCSS for stylesheets
 gem 'sass-rails', '~> 5.0.6'
 # Use Uglifier as compressor for JavaScript assets
