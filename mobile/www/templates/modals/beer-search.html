@@ -1,25 +1,24 @@
 <ion-modal-view>
   <ion-header-bar class="bar-positive item-input-inset">
+<!--
     <div ng-show="isUpcSearch">
       Search Results
     </div>
+-->
+    <label class="item-input-wrapper" ng-hide="isUpcSearch">
+      <i class="icon ion-ios-search placeholder-icon"></i>
 
-    <div ng-hide="isUpcSearch">
-      <label class="item-input-wrapper">
-        <i class="icon ion-ios-search placeholder-icon"></i>
+      <input
+        ng-model="formData.search"
+        type="search"
+        placeholder="Search"
+        ng-model-options="{ debounce: 1000 }"
+      />
+    </label>
 
-        <input
-          ng-model="formData.search"
-          type="search"
-          placeholder="Search"
-          ng-model-options="{ debounce: 1000 }"
-        />
-      </label>
-
-      <button class="button button-clear">
-        Cancel
-      </button>
-    </div>
+    <button class="button button-clear" ng-hide="isUpcSearch">
+      Cancel
+    </button>
   </ion-header-bar>
 
   <ion-footer-bar>

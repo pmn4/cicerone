@@ -1,5 +1,25 @@
 angular.module("starter.directives", [])
 
+.directive("beerHeader", function (Beer) {
+  return {
+    restrict: "E",
+
+    replace: true,
+
+    scope: {
+      beer: "="
+    },
+
+    templateUrl: "templates/directives/beer-header.html",
+
+    link: function ($scope) {
+      $scope.$watch("beerObject", function (beer) {
+        console.log($scope);
+      });
+    }
+  };
+})
+
 .directive("beerListItem", function () {
   return {
     restrict: "E",

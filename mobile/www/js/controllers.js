@@ -109,7 +109,7 @@ angular.module("starter.controllers", [])
   };
 })
 
-.controller("NewsletterDetailController", function ($scope, $state, $stateParams, $ionicModal, $cordovaBarcodeScanner, MessageService, Newsletter, Beer) {
+.controller("NewsletterDetailController", function ($scope, $state, $stateParams, $ionicModal, $ionicPopover, $cordovaBarcodeScanner, MessageService, Newsletter, Beer) {
   $scope.initialized = false;
   $scope.newsletterId = $stateParams.newsletterId;
 
@@ -164,7 +164,8 @@ angular.module("starter.controllers", [])
   function search() {
     if (!$searchScope.formData || !$searchScope.formData.search) { return; }
 
-    $scope.searching++;
+    $scope.ajaxing = $scope.indicateAjaxing(true);
+
     Beer.all({ name: $searchScope.formData.search })
       .then(function (response) {
         $scope.formData = {};
@@ -175,7 +176,7 @@ angular.module("starter.controllers", [])
       })
       .finally(function () {
         $searchScope.initialized = true;
-        $searchScope.searching = Math.max(0, $searchScope.searching - 1);
+        $scope.ajaxing = $scope.indicateAjaxing(false);
       });
   };
 
@@ -231,6 +232,37 @@ angular.module("starter.controllers", [])
   // $scope.$on("$ionicView.enter", function(e) {
   //   $scope.refresh();
   // });
+
+
+  var $popoverScope = $scope.$new();
+
+  $popoverScope.sendPreviewEmail = function () {
+    $scope.ajaxing = $scope.indicateAjaxing(true);
+
+    Newsletter.sendPreviewEmail()
+      .then(function (response) {
+        MessageService.success("Email sent to " + response.data.email + "!")
+      }, function (response) {
+        MessageService.responseError(response);
+      })
+      .finally(function () {
+        $scope.ajaxing = $scope.indicateAjaxing(false);
+      });
+  };
+
+  $ionicPopover.fromTemplateUrl("templates/popovers/newsletter-detail.html", {
+    scope: $popoverScope
+  }).then(function (popover) {
+    $scope.popover = popover;
+  });
+
+  $scope.showOptionsMenu = function ($event) {
+    $scope.popover.show($event);
+  };
+
+  $scope.hideOptionsMenu = function() {
+    $scope.popover.hide();
+  };
 })
 
 .controller("NewsletterBlockNewController", function ($scope, $state, $stateParams, $ionicHistory, MessageService, Newsletter, Beer) {
@@ -242,6 +274,13 @@ angular.module("starter.controllers", [])
     contentType: $stateParams.contentType,
     beer_key: $stateParams.beerKey
   };
+
+  if ($scope.formData.beer_key) {
+    Beer.find($scope.formData.beer_key)
+      .then(function (response) {
+        $scope.beer = response.data;
+      });
+  }
 
   var backToParent = $scope.cancel = function () {
     if ($ionicHistory.backView()) {

@@ -1,19 +1,7 @@
 <div>
-  <ion-list ng-show="formData.contentType">
-    <label class="item item-input item-floating-label" ng-class="{ 'validation-error': formElement.note.$invalid && formElement.note.$dirty }">
-      <span class="input-label">
-        Note to self
-      </span>
-
-      <input
-        name="note"
-        ng-model="formData.note"
-        type="text"
-        ng-required="true"
-        placeholder="Note to Self" />
-    </label>
-
-    <label class="item item-input item-floating-label" ng-class="{ 'validation-error': formData.contentType == 'beer' && formElement.beerKey.$invalid && formElement.beerKey.$dirty }" ng-show="formData.contentType == 'beer'">
+  <ion-list class="light-bg" ng-show="formData.contentType">
+<!--
+    <label class="item item-input item-stacked-label light-bg" ng-class="{ 'validation-error': formData.contentType == 'beer' && formElement.beerKey.$invalid && formElement.beerKey.$dirty }" ng-show="formData.contentType == 'beer'">
       <span class="input-label">
         (Brewery DB) Beer Id
       </span>
@@ -25,10 +13,32 @@
         ng-required="{{ formData.contentType == 'beer' }}"
         placeholder="(Brewery DB) Beer Id" />
     </label>
+-->
+    <input
+      name="beerKey"
+      ng-model="formData.beer_key"
+      type="hidden" />
+
+    <label
+      class="item item-input item-stacked-label light-bg"
+      ng-init="message = formData.contentType == 'beer' ? 'Say something about this beer' : 'Add some text...'"
+    >
+      <span class="input-label">
+        {{ message }}
+      </span>
+
+      <textarea
+        class="light-bg"
+        name="message"
+        ng-model="formData.message"
+        type="text"
+        rows="5"
+      ></textarea>
+    </label>
 
     <div class="item" ng-show="formData.contentType == 'beer'">
       <div>
-        How much ya got?
+        Invtentory
       </div>
 
       <div class="radio-set items-4">
@@ -40,19 +50,56 @@
       </div>
     </div>
 
-    <label class="item item-input item-floating-label" ng-show="formData.contentType == 'content'">
+    <label
+      class="item item-input item-stacked-label light-bg"
+      ng-show="formData.contentType == 'beer'"
+    >
       <span class="input-label">
-        Add some text...
+        Food pairings
       </span>
 
       <textarea
         class="light-bg"
-        name="message"
-        ng-model="formData.message"
+        name="food_pairings"
+        ng-model="formData.food_pairings"
         type="text"
-        placeholder="Add some text..."
-        rows="5"
+        placeholder="What food would you drink this with?"
+        rows="2"
       ></textarea>
+    </label>
+
+<!-- make this a follow up question so that a beer can have more than one similar beer
+    <label
+      class="item item-input item-stacked-label light-bg"
+      ng-show="formData.contentType == 'beer'"
+    >
+      <span class="input-label">
+        For the Macro drinker, what is a similar beer?
+      </span>
+
+      <input
+        name="simiar_beer_key"
+        ng-model="formData.simiar_beer_key"
+        type="text"
+        ng-required="{{ formData.contentType == 'beer' }}"
+        placeholder="(Brewery DB) Similar Beer Id" />
+    </label>
+-->
+
+    <label
+      class="item item-input item-stacked-label light-bg"
+      ng-class="{ 'validation-error': formElement.note.$invalid && formElement.note.$dirty }"
+    >
+      <span class="input-label">
+        Note to self
+      </span>
+
+      <input
+        name="note"
+        ng-model="formData.note"
+        type="text"
+        ng-required="true"
+        placeholder="Add a note (customers will not see this)" />
     </label>
   </ion-list>
 </div>

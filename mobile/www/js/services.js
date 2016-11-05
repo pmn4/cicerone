@@ -74,6 +74,22 @@ angular.module("starter.services", [])
         method: "DELETE",
         url: AppSettings.apiHost + "/newsletters/" + resourceId + "/blocks/" + blockId
       });
+    },
+
+    sendPreviewEmail: function (resourceId) {
+      return $http({
+        method: "POST",
+        url: AppSettings.apiHost + "/newsletters/" + resourceId + "/emails",
+        data: { email: { preview: true } }
+      });
+    },
+
+    sendEmail: function (resourceId) {
+      return $http({
+        method: "POST",
+        url: AppSettings.apiHost + "/newsletters/" + resourceId + "/emails",
+        data: { email: { preview: false } }
+      });
     }
   };
 })

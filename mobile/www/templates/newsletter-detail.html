@@ -1,4 +1,11 @@
 <ion-view view-title="{{ newsletter.subject }}">
+  <ion-nav-buttons side="right">
+    <button
+      class="button button-icon button-clear ion-android-more-horizontal"
+      ng-click="showOptionsMenu($event)">
+    </button>
+  </ion-nav-buttons>
+
   <ion-content padding="true">
     <ion-refresher pulling-text="Pull to refresh..." on-refresh="refresh()"></ion-refresher>
 

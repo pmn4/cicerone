@@ -19,8 +19,13 @@
     </ion-footer-bar>
 
     <ion-content padding="true" class="has-footer">
+      <beer-list-item
+        beer="beer"
+        ng-show="formData.contentType == 'beer'"
+      ></beer-list-item>
+
       <h5>
-        What would you like to do?
+        Give some more information about this beer
       </h5>
 
       <newsletter-block-form
