@@ -6,7 +6,7 @@ READ_ONLY_RESOURCE_ROUTES = %i(index create show).freeze
 
 Rails.application.routes.draw do
   use_doorkeeper
-  devise_for :users
+  devise_for :users, :controllers => { :omniauth_callbacks => 'omniauth_callbacks' }
 
   resources :newsletters do
     resources :blocks, controller: 'newsletter_blocks'

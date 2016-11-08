@@ -100,6 +100,22 @@ class ApplicationController < ActionController::Base
 
   protected
 
+  def current_user
+    @current_user ||= User.find_by(id: session[:user_id])
+  end
+
+  def signed_in?
+    !!current_user
+  end
+
+  helper_method :current_user, :signed_in?
+
+  def current_user=(user)
+    @current_user = user
+
+    session[:user_id] = user.try(:id)
+  end
+
   def as_json_options
   end
 
@@ -113,7 +129,7 @@ class ApplicationController < ActionController::Base
   end
 
   def list_resources(params)
-    self.class.model_class.all
+    self.class.model_class.accessible_to?(current_user)
   end
 
   def create_resource!(resource, _params)

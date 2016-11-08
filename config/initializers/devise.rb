@@ -1,3 +1,5 @@
+API_KEYS = YAML::load_file("#{ Rails.root }/config/api_keys.yml")[Rails.env]
+
 # Use this hook to configure devise mailer, warden hooks and so forth.
 # Many of these configuration options can be set straight in your model.
 Devise.setup do |config|
@@ -12,7 +14,7 @@ Devise.setup do |config|
   # Configure the e-mail address which will be shown in Devise::Mailer,
   # note that it will be overwritten if you use your own mailer class
   # with default "from" parameter.
-  config.mailer_sender = 'please-change-me-at-config-initializers-devise@example.com'
+  config.mailer_sender = 'welcome@brewline.io'
 
   # Configure the class responsible to send e-mails.
   # config.mailer = 'Devise::Mailer'
@@ -248,6 +250,7 @@ Devise.setup do |config|
   # Add a new OmniAuth provider. Check the wiki for more information on setting
   # up on your models and hooks.
   # config.omniauth :github, 'APP_ID', 'APP_SECRET', scope: 'user,public_repo'
+  config.omniauth :foursquare, API_KEYS['foursquare']['api_key'], API_KEYS['foursquare']['api_secret']
 
   # ==> Warden configuration
   # If you want to use other strategies, that are not supported by Devise, or

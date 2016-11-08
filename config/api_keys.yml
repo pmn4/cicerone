@@ -1,0 +1,15 @@
+defaults: &defaults
+  foursquare:
+    api_key: 'TQWJCSXTG2SDUZKA1VG1XFPMU3WUKSV2KDDJN1F2HUR3RWLX'
+    api_secret: 'HZLOF3O1NGZGLYWSMFL0JD1KG1BZ0DBVKLLF1LJSJOQQMW1T'
+
+development:
+  <<: *defaults
+
+test:
+  <<: *defaults
+
+production:
+  foursquare:
+    api_key: <%= ENV['FOURSQUARE_APP_ID'] %>
+    api_secret: <%= ENV['FOURSQUARE_APP_SECRET'] %>
