@@ -4,9 +4,18 @@ Doorkeeper.configure do
 
   # This block will be called to check whether the resource owner is authenticated or not.
   resource_owner_authenticator do
-    # Put your resource owner authentication logic here.
-    # Example implementation:
-    User.find(session[:user_id]) || redirect_to(new_user_session_url)
+    # current_user provided by Devise
+    if user_signed_in?
+      current_user
+    else
+      session[:redirect_uri] = request.original_url
+
+      if params[:view] == 'register'
+        redirect_to new_user_registration_url
+      else
+        redirect_to new_user_session_url
+      end
+    end
   end
 
   # If you want to restrict access to the web interface for adding oauth authorized applications, you need to declare the block below.

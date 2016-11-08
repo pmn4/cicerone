@@ -3,6 +3,9 @@ class ApplicationController < ActionController::Base
 
   respond_to :html, :json
 
+  before_action :doorkeeper_authorize!
+  skip_before_action :verify_authenticity_token
+
   before_action :prepare_brewery_db
 
   # Prevent CSRF attacks by raising an exception.
@@ -23,11 +26,11 @@ class ApplicationController < ActionController::Base
 
   def create
     resource = self.class.model_class.new(resource_params)
-    # resource.created_by = current_user
+    resource.created_by = current_user
 
-    # unless resource.createable_by?(current_user, resource_params)
-    #   raise PermissionError, :create
-    # end
+    unless resource.createable_by?(current_user, resource_params)
+      raise PermissionError, :create
+    end
 
     create_resource!(resource, resource_params)
 
@@ -43,9 +46,9 @@ class ApplicationController < ActionController::Base
   def show
     resource = find_resource(params[:id])
 
-    # unless resource.readable_by?(current_user)
-    #   raise PermissionError, :read
-    # end
+    unless resource.readable_by?(current_user)
+      raise PermissionError, :read
+    end
 
     respond_with resource.as_json(as_json_options)
   rescue PermissionError => e
@@ -56,6 +59,10 @@ class ApplicationController < ActionController::Base
 
   def update
     resource = self.class.model_class.find(params[:id])
+
+    unless resource.updateable_by?(current_user)
+      raise PermissionError, :update
+    end
 
     update_resource!(resource, resource_params)
 
@@ -73,9 +80,9 @@ class ApplicationController < ActionController::Base
   def destroy
     resource = self.class.model_class.find(params[:id])
 
-    # unless resource.deletable_by?(current_user)
-    #   raise PermissionError, :delete
-    # end
+    unless resource.deletable_by?(current_user)
+      raise PermissionError, :delete
+    end
 
     destroy_resource!(resource)
 

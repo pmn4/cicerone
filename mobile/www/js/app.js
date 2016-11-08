@@ -151,7 +151,7 @@ angular.module("starter", [
 .constant("moment", window.moment)
 
 .constant("AppSettings", {
-  apiHost: isProduction() ? "https://brewline.herokuapp.com" : "/api",
+  apiHost: isProduction() ? "http://api.brewline.io" : "/api",
   // apiHost: isProduction() ? "http://localhost:8336" : "/api",
   throttleRate: 20 * 1000, // 20 seconds
   gamesRefreshRate: 2 * 60 * 1000, // 2 minutes

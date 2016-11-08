@@ -273,4 +273,134 @@ angular.module("starter.services", [])
 
   return new MessageService();
 })
+
+.service("AuthService", function ($injector, $rootScope, $q, $cordovaInAppBrowser, AppSettings, $timeout) {
+  function AuthService() {
+    this._modal = null;
+  }
+
+  function isPublicRoute() {
+    var data = $injector.get("$state").$current.data;
+
+    return data && data.access && data.access.isPublic;
+  }
+
+  function uuid4() {
+    //// return uuid of form xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx
+    var uuid = '', ii;
+
+    for (ii = 0; ii < 32; ii += 1) {
+      switch (ii) {
+      case 8:
+      case 20:
+        uuid += '-';
+        uuid += (Math.random() * 16 | 0).toString(16);
+      break;
+      case 12:
+        uuid += '-';
+        uuid += '4';
+      break;
+      case 16:
+        uuid += '-';
+        uuid += (Math.random() * 4 | 8).toString(16);
+      break;
+      default:
+        uuid += (Math.random() * 16 | 0).toString(16);
+      }
+    }
+    return uuid;
+  }
+
+  AuthService.prototype.authenticate = function (action) {
+    var deferred = $q.defer();
+    var responseType = "token";
+    var url = AppSettings.oauthHost + "/oauth/authorize" +
+      "?client_id=" + AppSettings.oauthClientId +
+      "&redirect_uri=" + AppSettings.oauthRedirectUri +
+      "&scope=" + AppSettings.oauthScopes +
+      "&response_type=" + responseType + // @todo: deprecation warning!  some day this will go JWT
+      "&state=" + uuid4() +
+      "&view=" + action;
+
+    deferred.notify('opening oauth prompt');
+
+    var opener;
+    if (window.cordova && window.cordova.InAppBrowser) {
+      opener = window.cordova.InAppBrowser;
+    } else {
+      opener = window;
+    }
+    var browserRef = opener.open(url, '_blank', 'location=no');
+    var fnCancelled = function (event) {
+      deferred.reject("The sign in flow was canceled");
+    };
+
+    browserRef.addEventListener("loadstart", function (event) {
+      if ((event.url).indexOf(AppSettings.oauthRedirectUri) !== 0) { return; }
+
+      browserRef.removeEventListener("exit", fnCancelled);
+      browserRef.close();
+
+      var delimiter = responseType === "token" ? "#" : "?";
+      var callbackResponse = (event.url).split(delimiter)[1];
+      var responseParameters = (callbackResponse).split("&");
+      var parameterMap = {};
+
+      for (var i = 0; i < responseParameters.length; i++) {
+        var pair = responseParameters[i].split("=");
+        parameterMap[pair[0]] = pair[1];
+      }
+
+      if (parameterMap.access_token) {
+        deferred.resolve({
+          accessToken: parameterMap.access_token,
+          tokenType: parameterMap.token_type,
+          expiresIn: parameterMap.expires_in,
+          idToken: parameterMap.id_token
+        });
+      } else {
+        deferred.reject("Problem authenticating");
+      }
+    });
+
+    browserRef.addEventListener("exit", fnCancelled);
+
+    return deferred.promise;
+  };
+
+  AuthService.prototype.promptForAuthentication = function (action) {
+    var _this = this, scope, title, subTitle;
+
+    if (this._modal) { return; }
+    if (isPublicRoute()) { return; }
+
+    if (!action) { action = "login"; }
+    if (action === "register") {
+      subTitle = "Please create an account (or log in) to access this page";
+      title = "Please Register";
+    } else { // default is "login" behavior
+      subTitle = "For extra security, we ask that you log in every 60 minutes";
+      title = "Please Login";
+    }
+
+    scope = $rootScope.$new();
+    scope.openLogin = this.authenticate;
+    scope.action = action;
+
+    // @todo: figure out `scope` in ionicPopup
+    this._modal = $injector.get("$ionicPopup").show({
+      template: '<sportid-login hide-logo="true" action="action" on-auth="openLogin(action)"></sportid-login>',
+      title: title,
+      subTitle: subTitle,
+      scope: scope
+    })
+    .finally(function () {
+      _this._modal = null;
+    })
+    ;
+  };
+
+  return new AuthService();
+})
+
 ;
