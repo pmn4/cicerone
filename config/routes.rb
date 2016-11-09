@@ -6,7 +6,11 @@ READ_ONLY_RESOURCE_ROUTES = %i(index create show).freeze
 
 Rails.application.routes.draw do
   use_doorkeeper
-  devise_for :users, :controllers => { :omniauth_callbacks => 'omniauth_callbacks' }
+  devise_for :users, controllers: {
+    omniauth_callbacks: 'omniauth_callbacks',
+    registrations: 'users/registrations',
+    sessions: 'users/sessions'
+  }
 
   resources :newsletters do
     resources :blocks, controller: 'newsletter_blocks'
@@ -21,4 +25,6 @@ Rails.application.routes.draw do
   resources :beers, controller: :brewery_db_beers
 
   resources :upcs, only: :index, controller: :brewery_db_upcs
+
+  root to: 'pages#index'
 end

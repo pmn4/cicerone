@@ -1,3 +1,15 @@
+function isLocalStorageAvailable() {
+  var mod = "___na_na_na___";
+
+  try {
+    localStorage.setItem(mod, mod);
+    localStorage.removeItem(mod);
+    return true;
+  } catch(e) {
+    return false;
+  }
+}
+
 angular.module("starter.services", [])
 
 .factory("Newsletter", function ($http, AppSettings) {
@@ -389,7 +401,7 @@ angular.module("starter.services", [])
 
     // @todo: figure out `scope` in ionicPopup
     this._modal = $injector.get("$ionicPopup").show({
-      template: '<sportid-login hide-logo="true" action="action" on-auth="openLogin(action)"></sportid-login>',
+      template: '<brewline-login hide-logo="true" action="action" on-auth="openLogin(action)"></brewline-login>',
       title: title,
       subTitle: subTitle,
       scope: scope
@@ -401,6 +413,36 @@ angular.module("starter.services", [])
   };
 
   return new AuthService();
+})
+
+.service("AppStateService", function ($window, moment) {
+  return {
+    authToken: fnCurrent("brewline.AppState>authToken")
+  };
+
+  function fnCurrent (key, options) {
+    var store;
+
+    if (options && options.session) {
+      store = $window.sessionStorage;
+    } else {
+      store = $window.localStorage;
+    }
+
+    if (!isLocalStorageAvailable()) {
+      return function () {};
+    }
+
+    return function (id) {
+      if (arguments.length) {
+        if (id == null) { id = ""; }
+
+        store.setItem(key, id);
+      }
+
+      return store.getItem(key);
+    };
+  }
 })
 
 ;

@@ -100,6 +100,14 @@ class ApplicationController < ActionController::Base
 
   protected
 
+  def after_sign_in_path_for(*)
+    session[:redirect_uri] || super
+  end
+
+  def current_user_id
+    doorkeeper_token.try(:resource_owner_id) || session[:user_id]
+  end
+
   def current_user
     @current_user ||= User.find_by(id: session[:user_id])
   end

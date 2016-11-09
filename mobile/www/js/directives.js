@@ -34,6 +34,25 @@ angular.module("starter.directives", [])
   };
 })
 
+.directive("brewlineLogin", function () {
+  return {
+    restrict: "E",
+
+    scope: {
+      action: "=",
+      onAuth: "&"
+    },
+
+    templateUrl: "templates/directives/login.html",
+
+    link: function ($scope) {
+      $scope.$watch("action", function (action) {
+        $scope.label = action == "register" ? "Sign Up" : "Log In";
+      });
+    }
+  };
+})
+
 .directive("newsletterBlock", function () {
   return {
     restrict: "E",

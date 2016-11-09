@@ -38,7 +38,8 @@ angular.module("starter", [
   });
 })
 
-.config(function ($stateProvider, $urlRouterProvider) {
+.config(function ($httpProvider, $stateProvider, $urlRouterProvider, $provide) {
+  $httpProvider.interceptors.push("authHeaderTokenInterceptor");
 
   // Ionic uses AngularUI Router which uses the concept of states
   // Learn more here: https://github.com/angular-ui/ui-router
@@ -140,22 +141,112 @@ angular.module("starter", [
 
   // if none of the above states are matched, use this as the fallback
   $urlRouterProvider.otherwise("/tab/home");
+
+  // Exception reporting
+  $provide.decorator("$exceptionHandler", function ($delegate, exceptionReporter) {
+    // Return the new $exceptionHandler implementation which will
+    // report the error to our internal error handler before passing
+    // it off to the original $exceptionHandler implementation (which
+    // may, itself, be some other delegate provided by another part
+    // of the application).
+    return function exceptionHandlerProxy(error, cause) {
+      exceptionReporter.report(error);
+
+      $delegate(error, cause);
+    };
+  });
+})
+
+.factory("exceptionReporter", function ($window, $log) {
+  return {
+    report: report
+  };
+
+  function report(error) {
+    if ($window.NREUM && $window.NREUM.noticeError) {
+      // try/catch to prevent infinite loop
+      try {
+        $window.NREUM.noticeError(error);
+      } catch (newRelicError) {
+        $log.error(newRelicError);
+      }
+    } else {
+      $log.info("New Relic not available.");
+    }
+  }
 })
 
 .config(function ($ionicConfigProvider) {
   $ionicConfigProvider.tabs.position("bottom"); // android default is "top"
 })
 
+.factory("authHeaderTokenInterceptor", function ($q, AppSettings, AppStateService, AuthService) {
+  return {
+    request: function (config) {
+      var token = AppStateService.authToken();
+
+      if (!token) { return config; }
+      if (!config.url || config.url.indexOf(AppSettings.apiHost) !== 0) {
+        return config;
+      }
+
+      // config.headers = config.headers || {};
+      config.params = config.params || {};
+      // add token to request headers
+
+      if (token) {
+        // config.headers.authorization = token;
+        config.params.access_token = token;
+      }
+
+      return config;
+    },
+
+    // response: function (response) {
+    //  var token;
+
+    //  if (!response && !response.headers) { return response; }
+    //  if (!response.config.url || response.config.url.indexOf(AppSettings.apiHost) !== 0) {
+    //    return response;
+    //  }
+
+    //  token = response.headers("access_token");
+
+    //  if (token) {
+    //    AppStateService.authToken(token);
+    //  }
+
+    //  return response;
+    // }
+
+    responseError: function (response) {
+      var action = AppStateService.authToken() ? "login" : "register";
+
+      if (response.status === 401) {
+        AuthService.promptForAuthentication(action);
+      }
+
+      return $q.reject(response);
+    }
+  };
+})
+
 .constant("_", window._)
 
 .constant("moment", window.moment)
 
-.constant("AppSettings", {
-  apiHost: isProduction() ? "http://api.brewline.io" : "/api",
-  // apiHost: isProduction() ? "http://localhost:8336" : "/api",
-  throttleRate: 20 * 1000, // 20 seconds
-  gamesRefreshRate: 2 * 60 * 1000, // 2 minutes
-  scoreboardsRefreshRate: 5 * 60 * 1000, // 5 minutes
-  highlightDuration: 5 * 1000 // 5 seconds (+ 1 for fade out in css)
+.constant("AppSettings", isProduction() ? {
+  apiHost: "http://api.brewline.io",
+  oauthHost: "http://api.brewline.io",
+  oauthClientId: "50db4a5774deb0168abae583d6a27c1b43d6c64808735df28a4931d5a2b7ccbe",
+  oauthRedirectUri: "http://localhost/callback",
+  oauthScopes: ""
+} : {
+  apiHost: "/api",
+  oauthHost: "http://localhost:8336",
+  oauthClientId: "50db4a5774deb0168abae583d6a27c1b43d6c64808735df28a4931d5a2b7ccbe",
+  oauthRedirectUri: "urn:ietf:wg:oauth:2.0:oob",
+  oauthScopes: ""
 })
+
 ;
