@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161108015846) do
+ActiveRecord::Schema.define(version: 20161109151400) do
 
   create_table "brewery_dbs", force: :cascade do |t|
     t.string   "key",           limit: 255
@@ -25,9 +25,14 @@ ActiveRecord::Schema.define(version: 20161108015846) do
   add_index "brewery_dbs", ["deleted_at"], name: "index_brewery_dbs_on_deleted_at", using: :btree
 
   create_table "identities", force: :cascade do |t|
-    t.string  "uid",      limit: 255
-    t.string  "provider", limit: 255
-    t.integer "user_id",  limit: 4
+    t.string  "uid",               limit: 255
+    t.string  "provider",          limit: 255
+    t.integer "user_id",           limit: 4
+    t.string  "profile_url",       limit: 255
+    t.string  "user_name",         limit: 255
+    t.string  "profile_photo_url", limit: 255
+    t.string  "type",              limit: 255
+    t.string  "profile_email",     limit: 255
   end
 
   add_index "identities", ["user_id"], name: "index_identities_on_user_id", using: :btree
@@ -122,6 +127,8 @@ ActiveRecord::Schema.define(version: 20161108015846) do
     t.datetime "created_at",                                      null: false
     t.datetime "updated_at",                                      null: false
     t.datetime "deleted_at"
+    t.string   "first_name",             limit: 255
+    t.string   "last_name",              limit: 255
   end
 
   add_index "users", ["deleted_at"], name: "index_users_on_deleted_at", using: :btree

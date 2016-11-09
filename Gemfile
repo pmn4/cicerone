@@ -12,13 +12,16 @@ gem 'typhoeus'
 gem 'paranoia', '~> 2.0'
 # User management
 gem 'devise'
+gem 'devise-bootstrap-views'
 # OAuth
 gem 'doorkeeper'
 # Oauth
 gem 'omniauth'
 # Oauth Providers
 gem 'omniauth-foursquare'
+gem 'omniauth-untappd'
 # Use SCSS for stylesheets
+gem 'bootstrap-sass'
 gem 'sass-rails', '~> 5.0.6'
 # Use Uglifier as compressor for JavaScript assets
 gem 'uglifier', '>= 1.3.0'
