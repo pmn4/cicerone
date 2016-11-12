@@ -1,6 +1,6 @@
 angular.module("starter.controllers", [])
 
-.controller("AppController", function ($rootScope, $scope, $ionicPlatform, $window, $timeout, $cordovaSplashscreen) {
+.controller("AppController", function ($rootScope, $scope, $ionicPlatform, $window, $timeout) {
   // $rootScope.apiAuth = {};
   // $rootScope.$watch("apiAuth.accessToken", function (token) {
   //   if (!token) { return; }
@@ -42,8 +42,6 @@ angular.module("starter.controllers", [])
 
     return isAjaxing;
   };
-
-  $timeout(function () { $cordovaSplashscreen.hide(); });
 })
 
 .controller("HomeController", function () {})
@@ -68,11 +66,10 @@ angular.module("starter.controllers", [])
         $scope.$broadcast('scroll.refreshComplete');
       });
   };
-  $scope.refresh();
 
-  // $scope.$on("$ionicView.enter", function(e) {
-  //   $scope.refresh();
-  // });
+  $scope.$on("$ionicView.enter", function(e) {
+    $scope.refresh();
+  });
 })
 
 .controller("NewsletterNewController", function ($scope, $state, $stateParams, $ionicHistory, MessageService, Newsletter) {
@@ -109,7 +106,7 @@ angular.module("starter.controllers", [])
   };
 })
 
-.controller("NewsletterDetailController", function ($scope, $state, $stateParams, $ionicModal, $ionicPopover, $cordovaBarcodeScanner, MessageService, Newsletter, Beer) {
+.controller("NewsletterDetailController", function ($scope, $state, $stateParams, $ionicPopup, $ionicModal, $ionicPopover, $cordovaBarcodeScanner, MessageService, Newsletter, Beer) {
   $scope.initialized = false;
   $scope.newsletterId = $stateParams.newsletterId;
 
@@ -237,17 +234,50 @@ angular.module("starter.controllers", [])
   var $popoverScope = $scope.$new();
 
   $popoverScope.sendPreviewEmail = function () {
+    $scope.hideOptionsMenu();
+
     $scope.ajaxing = $scope.indicateAjaxing(true);
 
-    Newsletter.sendPreviewEmail()
+    Newsletter.sendPreviewEmail($scope.newsletterId)
       .then(function (response) {
-        MessageService.success("Email sent to " + response.data.email + "!")
+        MessageService.success("Email sent to " + response.data.email + "!");
       }, function (response) {
         MessageService.responseError(response);
       })
       .finally(function () {
         $scope.ajaxing = $scope.indicateAjaxing(false);
       });
+  };
+
+  function _destroy() {
+    $scope.ajaxing = $scope.indicateAjaxing(true);
+
+    Newsletter.destroy($scope.newsletterId)
+      .then(function (response) {
+        MessageService.success("Deleted.")
+
+        $state.go("tab.newsletters");
+      }, function (response) {
+        MessageService.responseError(response);
+      })
+      .finally(function () {
+        $scope.ajaxing = $scope.indicateAjaxing(false);
+      });
+  }
+
+  $popoverScope.destroy = function () {
+    $scope.hideOptionsMenu();
+
+    $ionicPopup.confirm({
+      title: "Delete Newsletter",
+      template: "Are you sure you want to delete this newsletter?",
+      okText: "Delete",
+      okType: "button-assertive"
+    }).then(function (res) {
+      if (!res) { return; }
+
+      _destroy();
+    });
   };
 
   $ionicPopover.fromTemplateUrl("templates/popovers/newsletter-detail.html", {

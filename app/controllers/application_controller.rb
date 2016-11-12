@@ -4,7 +4,6 @@ class ApplicationController < ActionController::Base
   respond_to :html, :json
 
   before_action :doorkeeper_authorize!
-  skip_before_action :verify_authenticity_token
 
   # there must be a better place for this. config? environment?
   before_action :prepare_brewery_db
@@ -13,7 +12,7 @@ class ApplicationController < ActionController::Base
   # For APIs, you may want to use :null_session instead.
   protect_from_forgery \
     with: :null_session,
-    if: Proc.new { |c| c.request.format == 'application/json' }
+    unless: -> { request.format.json? }
 
   class << self
     attr_accessor :model_class, :resource_param
@@ -35,7 +34,9 @@ class ApplicationController < ActionController::Base
 
     create_resource!(resource, resource_params)
 
-    respond_with resource.as_json(as_json_options)
+    respond_with(resource) do |format|
+      format.json { render json: resource.as_json(as_json_options) }
+    end
   rescue PermissionError => e
     permission_error!(resource, e)
   rescue ActiveRecord::RecordInvalid => e
@@ -51,7 +52,9 @@ class ApplicationController < ActionController::Base
       raise PermissionError, :read
     end
 
-    respond_with resource.as_json(as_json_options)
+    respond_with(resource) do |format|
+      format.json { render json: resource.as_json(as_json_options) }
+    end
   rescue PermissionError => e
     permission_error!(resource, e)
   rescue ActiveRecord::RecordNotFound => e
@@ -133,7 +136,7 @@ class ApplicationController < ActionController::Base
     resource.save!
   end
 
-  def destry_resource!(resource, _params)
+  def destroy_resource!(resource)
     resource.destroy!
   end
 

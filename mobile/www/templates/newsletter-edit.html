@@ -20,7 +20,10 @@
 
     <ion-content padding="true" class="has-footer">
       <ion-list>
-        <label class="item item-input item-floating-label" ng-class="{ 'validation-error': editForm.subject.$invalid && editForm.subject.$dirty }">
+        <label
+          class="item item-input item-floating-label light-bg"
+          ng-class="{ 'validation-error': editForm.subject.$invalid && editForm.subject.$dirty }"
+        >
           <span class="input-label">
             Subject
           </span>

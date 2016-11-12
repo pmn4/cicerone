@@ -291,12 +291,6 @@ angular.module("starter.services", [])
     this._modal = null;
   }
 
-  function isPublicRoute() {
-    var data = $injector.get("$state").$current.data;
-
-    return data && data.access && data.access.isPublic;
-  }
-
   function uuid4() {
     //// return uuid of form xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx
     var uuid = '', ii;
@@ -342,6 +336,7 @@ angular.module("starter.services", [])
     } else {
       opener = window;
     }
+    // open with hidden=true, if not immediately redirected to oauthRedurectUri, show it
     var browserRef = opener.open(url, '_blank', 'location=no');
     var fnCancelled = function (event) {
       deferred.reject("The sign in flow was canceled");
@@ -351,7 +346,6 @@ angular.module("starter.services", [])
       if ((event.url).indexOf(AppSettings.oauthRedirectUri) !== 0) { return; }
 
       browserRef.removeEventListener("exit", fnCancelled);
-      browserRef.close();
 
       var delimiter = responseType === "token" ? "#" : "?";
       var callbackResponse = (event.url).split(delimiter)[1];
@@ -373,6 +367,11 @@ angular.module("starter.services", [])
       } else {
         deferred.reject("Problem authenticating");
       }
+
+      // closing the browser seems to have a bug
+      setTimeout(function () {
+        browserRef.close();
+      }, 50);
     });
 
     browserRef.addEventListener("exit", fnCancelled);
@@ -381,10 +380,7 @@ angular.module("starter.services", [])
   };
 
   AuthService.prototype.promptForAuthentication = function (action) {
-    var _this = this, scope, title, subTitle;
-
-    if (this._modal) { return; }
-    if (isPublicRoute()) { return; }
+    var _this = this, deferred = $q.defer(), modal, scope, title, subTitle;
 
     if (!action) { action = "login"; }
     if (action === "register") {
@@ -396,20 +392,34 @@ angular.module("starter.services", [])
     }
 
     scope = $rootScope.$new();
-    scope.openLogin = this.authenticate;
+    scope.openLogin = function () {
+      _this.authenticate()
+        .then(function (response) {
+          $injector.get("AppStateService").authToken(response.accessToken)
+
+          deferred.resolve(response);
+
+          if (modal) {
+            modal.hide();
+          } else {
+            $injector("$window").location.reload(true);
+          }
+        }, function (message) {
+          $injector.get("MessageService").error(message);
+
+          deferred.reject(message);
+        });
+    };
     scope.action = action;
 
-    // @todo: figure out `scope` in ionicPopup
-    this._modal = $injector.get("$ionicPopup").show({
-      template: '<brewline-login hide-logo="true" action="action" on-auth="openLogin(action)"></brewline-login>',
+    modal = $injector.get("$ionicPopup").show({
+      template: '<brewline-login hide-logo="true" action="action" on-auth="openLogin()"></brewline-login>',
       title: title,
       subTitle: subTitle,
       scope: scope
-    })
-    .finally(function () {
-      _this._modal = null;
-    })
-    ;
+    });
+
+    return deferred.promise;
   };
 
   return new AuthService();

@@ -17,7 +17,7 @@ angular.module("starter", [
   "ngCordova"
 ])
 
-.run(function ($ionicPlatform, $http) {
+.run(function ($ionicPlatform, $http, $cordovaSplashscreen) {
   $ionicPlatform.ready(function () {
     // Ionic.io();
 
@@ -35,6 +35,8 @@ angular.module("starter", [
 
     $http.defaults.headers.common["Accept"] = "application/json";
     $http.defaults.headers.common["Content-Type"] = "application/json";
+
+    $cordovaSplashscreen.hide();
   });
 })
 
@@ -180,7 +182,7 @@ angular.module("starter", [
   $ionicConfigProvider.tabs.position("bottom"); // android default is "top"
 })
 
-.factory("authHeaderTokenInterceptor", function ($q, AppSettings, AppStateService, AuthService) {
+.factory("authHeaderTokenInterceptor", function ($q, $injector, AppSettings, AppStateService, AuthService) {
   return {
     request: function (config) {
       var token = AppStateService.authToken();
@@ -223,7 +225,10 @@ angular.module("starter", [
       var action = AppStateService.authToken() ? "login" : "register";
 
       if (response.status === 401) {
-        AuthService.promptForAuthentication(action);
+        AuthService.promptForAuthentication(action)
+          .then(function () {
+            $injector.get("$http")(response.config);
+          });
       }
 
       return $q.reject(response);

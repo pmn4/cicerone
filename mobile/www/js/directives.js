@@ -34,7 +34,7 @@ angular.module("starter.directives", [])
   };
 })
 
-.directive("brewlineLogin", function () {
+.directive("brewlineLogin", function (MessageService, AuthService, AppStateService) {
   return {
     restrict: "E",
 

@@ -4,7 +4,7 @@ class Newsletter < ActiveRecord::Base
   has_many :newsletter_blocks
   has_many :newsletter_emails
 
-  belongs_to :user, foreign_key: :created_by_id
+  belongs_to :created_by, class_name: 'User'
 
   alias_method :blocks, :newsletter_blocks
   alias_method :emails, :newsletter_emails
