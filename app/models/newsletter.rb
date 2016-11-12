@@ -4,6 +4,8 @@ class Newsletter < ActiveRecord::Base
   has_many :newsletter_blocks
   has_many :newsletter_emails
 
+  belongs_to :user, foreign_key: :created_by_id
+
   alias_method :blocks, :newsletter_blocks
   alias_method :emails, :newsletter_emails
 
@@ -21,5 +23,11 @@ class Newsletter < ActiveRecord::Base
     end
 
     super(options)
+  end
+
+  class << self
+    def accessible_to(user)
+      user.newsletters
+    end
   end
 end

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161109151400) do
+ActiveRecord::Schema.define(version: 20161111233537) do
 
   create_table "brewery_dbs", force: :cascade do |t|
     t.string   "key",           limit: 255
@@ -23,6 +23,18 @@ ActiveRecord::Schema.define(version: 20161109151400) do
   end
 
   add_index "brewery_dbs", ["deleted_at"], name: "index_brewery_dbs_on_deleted_at", using: :btree
+
+  create_table "emails", force: :cascade do |t|
+    t.string   "type",          limit: 255
+    t.text     "response_json", limit: 65535
+    t.datetime "created_at",                  null: false
+    t.datetime "updated_at",                  null: false
+    t.integer  "venue_id",      limit: 4
+    t.integer  "created_by_id", limit: 4
+  end
+
+  add_index "emails", ["created_by_id"], name: "fk_rails_1c6327a88e", using: :btree
+  add_index "emails", ["venue_id"], name: "index_emails_on_venue_id", using: :btree
 
   create_table "identities", force: :cascade do |t|
     t.string  "uid",               limit: 255
@@ -46,20 +58,24 @@ ActiveRecord::Schema.define(version: 20161109151400) do
     t.datetime "created_at",                null: false
     t.datetime "updated_at",                null: false
     t.integer  "quantity_id",   limit: 4
+    t.integer  "created_by_id", limit: 4
   end
 
   add_index "newsletter_blocks", ["brewery_db_id"], name: "index_newsletter_blocks_on_brewery_db_id", using: :btree
+  add_index "newsletter_blocks", ["created_by_id"], name: "fk_rails_98af748098", using: :btree
   add_index "newsletter_blocks", ["newsletter_id"], name: "index_newsletter_blocks_on_newsletter_id", using: :btree
   add_index "newsletter_blocks", ["quantity_id"], name: "index_newsletter_blocks_on_quantity_id", using: :btree
 
   create_table "newsletters", force: :cascade do |t|
-    t.string   "subject",    limit: 255
-    t.text     "body",       limit: 65535
-    t.datetime "created_at",               null: false
-    t.datetime "updated_at",               null: false
+    t.string   "subject",       limit: 255
+    t.text     "body",          limit: 65535
+    t.datetime "created_at",                  null: false
+    t.datetime "updated_at",                  null: false
     t.datetime "deleted_at"
+    t.integer  "created_by_id", limit: 4
   end
 
+  add_index "newsletters", ["created_by_id"], name: "fk_rails_0388e4084a", using: :btree
   add_index "newsletters", ["deleted_at"], name: "index_newsletters_on_deleted_at", using: :btree
 
   create_table "oauth_access_grants", force: :cascade do |t|
@@ -113,6 +129,21 @@ ActiveRecord::Schema.define(version: 20161109151400) do
     t.datetime "updated_at",             null: false
   end
 
+  create_table "send_confirmations", force: :cascade do |t|
+    t.string   "type",        limit: 255
+    t.integer  "email_id",    limit: 4
+    t.string   "external_id", limit: 255
+    t.string   "subject",     limit: 255
+    t.string   "category",    limit: 255
+    t.string   "status",      limit: 255
+    t.text     "headers",     limit: 65535
+    t.text     "body",        limit: 65535
+    t.datetime "created_at",                null: false
+    t.datetime "updated_at",                null: false
+  end
+
+  add_index "send_confirmations", ["email_id"], name: "index_send_confirmations_on_email_id", using: :btree
+
   create_table "users", force: :cascade do |t|
     t.string   "email",                  limit: 255, default: "", null: false
     t.string   "encrypted_password",     limit: 255, default: "", null: false
@@ -135,8 +166,22 @@ ActiveRecord::Schema.define(version: 20161109151400) do
   add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree
   add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
 
+  create_table "venues", force: :cascade do |t|
+    t.datetime "created_at",              null: false
+    t.datetime "updated_at",              null: false
+    t.integer  "created_by_id", limit: 4
+  end
+
+  add_index "venues", ["created_by_id"], name: "fk_rails_8adbe93bb4", using: :btree
+
+  add_foreign_key "emails", "users", column: "created_by_id"
+  add_foreign_key "emails", "venues"
   add_foreign_key "newsletter_blocks", "brewery_dbs"
   add_foreign_key "newsletter_blocks", "newsletters"
+  add_foreign_key "newsletter_blocks", "users", column: "created_by_id"
+  add_foreign_key "newsletters", "users", column: "created_by_id"
   add_foreign_key "oauth_access_grants", "oauth_applications", column: "application_id"
   add_foreign_key "oauth_access_tokens", "oauth_applications", column: "application_id"
+  add_foreign_key "send_confirmations", "emails"
+  add_foreign_key "venues", "users", column: "created_by_id"
 end

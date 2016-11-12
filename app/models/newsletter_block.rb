@@ -1,5 +1,6 @@
 class NewsletterBlock < ActiveRecord::Base
   belongs_to :newsletter
+  belongs_to :user, foreign_key: :created_by_id
 
   def block_type
     self.class.classname.sub(%r(#{NewsletterBlock.classname}$), '')

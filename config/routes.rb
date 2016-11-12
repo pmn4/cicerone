@@ -2,7 +2,6 @@ app_root = File.dirname(File.absolute_path(__FILE__))
 Dir.glob("#{app_root}/../app/controllers/**/*_controller.rb", &method(:require))
 
 RESOURCE_ROUTES = %i(index create show update destroy).freeze
-READ_ONLY_RESOURCE_ROUTES = %i(index create show).freeze
 
 Rails.application.routes.draw do
   use_doorkeeper
@@ -15,7 +14,7 @@ Rails.application.routes.draw do
   resources :newsletters do
     resources :blocks, controller: 'newsletter_blocks'
 
-    resources :emails, only: READ_ONLY_RESOURCE_ROUTES, controller: 'newsletter_emails'
+    # resources :emails, only: %i(index create show), controller: 'newsletter_emails'
 
     resources :beer_blocks, only: :create, controller: 'beer_newsletter_blocks'
 

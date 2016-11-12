@@ -18,8 +18,12 @@ gem 'doorkeeper'
 # Oauth
 gem 'omniauth'
 # Oauth Providers
+# gem 'omniauth-facebook'
 gem 'omniauth-foursquare'
+# gem 'omniauth-google-oauth2'
 gem 'omniauth-untappd'
+## Email
+gem 'sendgrid-ruby'
 # Use SCSS for stylesheets
 gem 'bootstrap-sass'
 gem 'sass-rails', '~> 5.0.6'

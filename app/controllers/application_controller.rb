@@ -6,6 +6,7 @@ class ApplicationController < ActionController::Base
   before_action :doorkeeper_authorize!
   skip_before_action :verify_authenticity_token
 
+  # there must be a better place for this. config? environment?
   before_action :prepare_brewery_db
 
   # Prevent CSRF attacks by raising an exception.
@@ -52,7 +53,7 @@ class ApplicationController < ActionController::Base
 
     respond_with resource.as_json(as_json_options)
   rescue PermissionError => e
-    permission_error!(resource, e.message)
+    permission_error!(resource, e)
   rescue ActiveRecord::RecordNotFound => e
     not_found!(resource, e)
   end
@@ -104,26 +105,6 @@ class ApplicationController < ActionController::Base
     session[:redirect_uri] || super
   end
 
-  def current_user_id
-    doorkeeper_token.try(:resource_owner_id) || session[:user_id]
-  end
-
-  def current_user
-    @current_user ||= User.find_by(id: session[:user_id])
-  end
-
-  def signed_in?
-    !!current_user
-  end
-
-  helper_method :current_user, :signed_in?
-
-  def current_user=(user)
-    @current_user = user
-
-    session[:user_id] = user.try(:id)
-  end
-
   def as_json_options
   end
 
@@ -137,7 +118,7 @@ class ApplicationController < ActionController::Base
   end
 
   def list_resources(params)
-    self.class.model_class.accessible_to?(current_user)
+    self.class.model_class.accessible_to(current_user)
   end
 
   def create_resource!(resource, _params)

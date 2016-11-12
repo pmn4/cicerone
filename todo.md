@@ -1,11 +1,12 @@
 TODO:
+Authorization to resources
 Send Email
-Users
 Stores
-StoreAddresses
-External
+StoreLocation
+ExternalSource
 Store (M:M) ExternalSource
 
 done:
 Scan a Beer -> POST to API -> BreweryDb.id
 Search for a Beer -> POST to API -> BreweryDb.id
+Users

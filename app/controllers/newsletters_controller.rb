@@ -7,7 +7,8 @@ class NewslettersController < ApplicationController
   protected
 
   def list_resources(params)
-    self.class.model_class.includes(:newsletter_blocks).all
+    self.class.model_class.accessible_to(current_user)
+      .includes(:newsletter_blocks)
   end
 
   def as_json_options

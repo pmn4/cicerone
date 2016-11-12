@@ -1,4 +1,4 @@
-require_relative '../models/newsletter_email'
+require_relative '../models/email'
 
 class NewsletterEmailsController < ApplicationController
   self.model_class = NewsletterEmail

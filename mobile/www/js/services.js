@@ -417,7 +417,7 @@ angular.module("starter.services", [])
 
 .service("AppStateService", function ($window, moment) {
   return {
-    authToken: fnCurrent("brewline.AppState>authToken")
+    authToken: fnCurrent("Brewline.AppState>authToken")
   };
 
   function fnCurrent (key, options) {
