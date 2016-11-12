@@ -238,8 +238,8 @@ angular.module("starter", [
 .constant("AppSettings", isProduction() ? {
   apiHost: "http://api.brewline.io",
   oauthHost: "http://api.brewline.io",
-  oauthClientId: "50db4a5774deb0168abae583d6a27c1b43d6c64808735df28a4931d5a2b7ccbe",
-  oauthRedirectUri: "http://localhost/callback",
+  oauthClientId: "d761c53e5603df9fdad5a510303c88915f64f31b397964040140a62305151a7e",
+  oauthRedirectUri: "https://localhost/callback",
   oauthScopes: ""
 } : {
   apiHost: "/api",
