@@ -1,7 +1,7 @@
 require 'delegate'
 require 'sendgrid-ruby'
 
-require_relative '../models/notification_response'
+require_relative '../models/send_confirmation'
 
 module Services
   class EmailError < StandardError; end
@@ -170,7 +170,7 @@ module Services
     private
 
     def store_response(response)
-      Models::NotificationResponse.create!({
+      Models::SendConfirmation.create!({
         from: sender,
         to: recipient,
         categories: categories.join(','),
