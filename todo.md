@@ -1,5 +1,4 @@
 TODO:
-Authorization to resources
 Send Email
 Stores
 StoreLocation
@@ -10,3 +9,4 @@ done:
 Scan a Beer -> POST to API -> BreweryDb.id
 Search for a Beer -> POST to API -> BreweryDb.id
 Users
+Authorization to resources

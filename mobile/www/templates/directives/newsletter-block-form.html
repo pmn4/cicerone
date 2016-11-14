@@ -1,7 +1,7 @@
 <div>
-  <ion-list class="light-bg" ng-show="formData.contentType">
+  <ion-list class="light-bg" ng-show="formData.block_type">
 <!--
-    <label class="item item-input item-stacked-label light-bg" ng-class="{ 'validation-error': formData.contentType == 'beer' && formElement.beerKey.$invalid && formElement.beerKey.$dirty }" ng-show="formData.contentType == 'beer'">
+    <label class="item item-input item-stacked-label light-bg" ng-class="{ 'validation-error': formData.block_type == 'Beer' && formElement.beerKey.$invalid && formElement.beerKey.$dirty }" ng-show="formData.block_type == 'Beer'">
       <span class="input-label">
         (Brewery DB) Beer Id
       </span>
@@ -10,7 +10,7 @@
         name="beerKey"
         ng-model="formData.beer_key"
         type="text"
-        ng-required="{{ formData.contentType == 'beer' }}"
+        ng-required="{{ formData.block_type == 'Beer' }}"
         placeholder="(Brewery DB) Beer Id" />
     </label>
 -->
@@ -21,7 +21,7 @@
 
     <label
       class="item item-input item-stacked-label light-bg"
-      ng-init="message = formData.contentType == 'beer' ? 'Say something about this beer' : 'Add some text...'"
+      ng-init="message = formData.block_type == 'Beer' ? 'Say something about this beer' : 'Add some text...'"
     >
       <span class="input-label">
         {{ message }}
@@ -36,7 +36,7 @@
       ></textarea>
     </label>
 
-    <div class="item" ng-show="formData.contentType == 'beer'">
+    <div class="item" ng-show="formData.block_type == 'Beer'">
       <div>
         Invtentory
       </div>
@@ -52,7 +52,7 @@
 
     <label
       class="item item-input item-stacked-label light-bg"
-      ng-show="formData.contentType == 'beer'"
+      ng-show="formData.block_type == 'Beer'"
     >
       <span class="input-label">
         Food pairings
@@ -71,7 +71,7 @@
 <!-- make this a follow up question so that a beer can have more than one similar beer
     <label
       class="item item-input item-stacked-label light-bg"
-      ng-show="formData.contentType == 'beer'"
+      ng-show="formData.block_type == 'Beer'"
     >
       <span class="input-label">
         For the Macro drinker, what is a similar beer?
@@ -81,7 +81,7 @@
         name="simiar_beer_key"
         ng-model="formData.simiar_beer_key"
         type="text"
-        ng-required="{{ formData.contentType == 'beer' }}"
+        ng-required="{{ formData.block_type == 'Beer' }}"
         placeholder="(Brewery DB) Similar Beer Id" />
     </label>
 -->

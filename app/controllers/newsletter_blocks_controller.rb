@@ -1,17 +1,17 @@
 require_relative '../models/newsletter_block'
 
-class NewsletterBlocksController < ApplicationController
+class NewsletterBlocksController < NewsletterResourcesController
   self.model_class = NewsletterBlock
   self.resource_param = :newsletter_block
 
   def show
-    respond_with newsletter.blocks.find(params[:id])
+    respond_with find_resource(params[:id])
   end
 
   def create
     resource = create_block(resource_params)
 
-    newsletter.newsletter_blocks << resource
+    @newsletter.newsletter_blocks << resource
 
     # @todo: figure this out
     # respond_with resource.as_json(as_json_options)
@@ -20,8 +20,8 @@ class NewsletterBlocksController < ApplicationController
 
   protected
 
-  def newsletter
-    @newsletter ||= Newsletter.find(params[:newsletter_id])
+  def find_resource(resource_id)
+    @newsletter.newsletter_blocks.find(resource_id)
   end
 
   def create_block(resource_params)

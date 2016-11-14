@@ -1,4 +1,6 @@
 class NewsletterBlock < ActiveRecord::Base
+  extend Base
+
   belongs_to :newsletter
   belongs_to :created_by, class_name: 'User'
 

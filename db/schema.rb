@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161111233537) do
+ActiveRecord::Schema.define(version: 20161113190740) do
 
   create_table "brewery_dbs", force: :cascade do |t|
     t.string   "key",           limit: 255
@@ -23,6 +23,19 @@ ActiveRecord::Schema.define(version: 20161111233537) do
   end
 
   add_index "brewery_dbs", ["deleted_at"], name: "index_brewery_dbs_on_deleted_at", using: :btree
+
+  create_table "categories", force: :cascade do |t|
+    t.integer  "venue_id",   limit: 4
+    t.string   "name",       limit: 255
+    t.string   "color",      limit: 255
+    t.string   "note",       limit: 255
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
+    t.datetime "deleted_at"
+  end
+
+  add_index "categories", ["deleted_at"], name: "index_categories_on_deleted_at", using: :btree
+  add_index "categories", ["venue_id"], name: "index_categories_on_venue_id", using: :btree
 
   create_table "emails", force: :cascade do |t|
     t.string   "type",          limit: 255
@@ -59,10 +72,12 @@ ActiveRecord::Schema.define(version: 20161111233537) do
     t.datetime "updated_at",                null: false
     t.integer  "quantity_id",   limit: 4
     t.integer  "created_by_id", limit: 4
+    t.datetime "deleted_at"
   end
 
   add_index "newsletter_blocks", ["brewery_db_id"], name: "index_newsletter_blocks_on_brewery_db_id", using: :btree
   add_index "newsletter_blocks", ["created_by_id"], name: "fk_rails_98af748098", using: :btree
+  add_index "newsletter_blocks", ["deleted_at"], name: "index_newsletter_blocks_on_deleted_at", using: :btree
   add_index "newsletter_blocks", ["newsletter_id"], name: "index_newsletter_blocks_on_newsletter_id", using: :btree
   add_index "newsletter_blocks", ["quantity_id"], name: "index_newsletter_blocks_on_quantity_id", using: :btree
 
@@ -73,10 +88,12 @@ ActiveRecord::Schema.define(version: 20161111233537) do
     t.datetime "updated_at",                  null: false
     t.datetime "deleted_at"
     t.integer  "created_by_id", limit: 4
+    t.integer  "venue_id",      limit: 4
   end
 
   add_index "newsletters", ["created_by_id"], name: "fk_rails_0388e4084a", using: :btree
   add_index "newsletters", ["deleted_at"], name: "index_newsletters_on_deleted_at", using: :btree
+  add_index "newsletters", ["venue_id"], name: "index_newsletters_on_venue_id", using: :btree
 
   create_table "oauth_access_grants", force: :cascade do |t|
     t.integer  "resource_owner_id", limit: 4,     null: false
@@ -167,19 +184,28 @@ ActiveRecord::Schema.define(version: 20161111233537) do
   add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
 
   create_table "venues", force: :cascade do |t|
-    t.datetime "created_at",              null: false
-    t.datetime "updated_at",              null: false
+    t.datetime "created_at",                null: false
+    t.datetime "updated_at",                null: false
     t.integer  "created_by_id", limit: 4
+    t.string   "type",          limit: 255
+    t.string   "color",         limit: 255
+    t.string   "response_json", limit: 255
+    t.string   "key",           limit: 255
+    t.string   "uri",           limit: 255
+    t.datetime "deleted_at"
   end
 
   add_index "venues", ["created_by_id"], name: "fk_rails_8adbe93bb4", using: :btree
+  add_index "venues", ["deleted_at"], name: "index_venues_on_deleted_at", using: :btree
 
+  add_foreign_key "categories", "venues"
   add_foreign_key "emails", "users", column: "created_by_id"
   add_foreign_key "emails", "venues"
   add_foreign_key "newsletter_blocks", "brewery_dbs"
   add_foreign_key "newsletter_blocks", "newsletters"
   add_foreign_key "newsletter_blocks", "users", column: "created_by_id"
   add_foreign_key "newsletters", "users", column: "created_by_id"
+  add_foreign_key "newsletters", "venues"
   add_foreign_key "oauth_access_grants", "oauth_applications", column: "application_id"
   add_foreign_key "oauth_access_tokens", "oauth_applications", column: "application_id"
   add_foreign_key "send_confirmations", "emails"

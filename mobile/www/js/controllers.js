@@ -127,12 +127,11 @@ angular.module("starter.controllers", [])
         $scope.$broadcast('scroll.refreshComplete');
       });
   };
-  $scope.refresh();
 
-  $scope.addBlock = function (contentType, beerKey) {
+  $scope.addBlock = function (block_type, beerKey) {
     $state.go("tab.newsletterBlockNew", {
       newsletterId: $scope.newsletterId,
-      contentType: contentType,
+      block_type: block_type,
       beerKey: beerKey
     });
   };
@@ -226,9 +225,9 @@ angular.module("starter.controllers", [])
     $scope.addBlock("content");
   };
 
-  // $scope.$on("$ionicView.enter", function(e) {
-  //   $scope.refresh();
-  // });
+  $scope.$on("$ionicView.enter", function(e) {
+    $scope.refresh();
+  });
 
 
   var $popoverScope = $scope.$new();
@@ -256,7 +255,7 @@ angular.module("starter.controllers", [])
       .then(function (response) {
         MessageService.success("Deleted.")
 
-        $state.go("tab.newsletters");
+        $state.go("tab.newsletters", {}, { location: "replace" });
       }, function (response) {
         MessageService.responseError(response);
       })
@@ -301,7 +300,7 @@ angular.module("starter.controllers", [])
 
   $scope.formData = {
     newsletter_id: $scope.newsletterId,
-    contentType: $stateParams.contentType,
+    block_type: $stateParams.block_type,
     beer_key: $stateParams.beerKey
   };
 
@@ -331,7 +330,7 @@ angular.module("starter.controllers", [])
       fn = function (newsletterId, formData) {
         return Newsletter.updateBlock(newsletterId, $scope.blockId, formData);
       };
-    } else if ($scope.formData.contentType == "beer") {
+    } else if ($scope.formData.block_type == "beer") {
       fn = Newsletter.createBeerBlock;
     } else {
       fn = Newsletter.createContentBlock;
@@ -352,7 +351,7 @@ angular.module("starter.controllers", [])
   };
 })
 
-.controller("NewsletterBlockDetailController", function ($scope, $state, $stateParams, MessageService, Newsletter) {
+.controller("NewsletterBlockDetailController", function ($scope, $state, $stateParams, $ionicHistory, $ionicPopup, $ionicPopover, MessageService, Newsletter) {
   $scope.initialized = false;
   $scope.newsletterId = $stateParams.newsletterId;
   $scope.blockId = $stateParams.blockId;
@@ -376,6 +375,91 @@ angular.module("starter.controllers", [])
   };
   $scope.refresh();
 
+  $scope.$watch("block", function (block) {
+    $scope.formData = angular.extend({}, block);
+  });
+
+  var backToParent = $scope.cancel = function () {
+    if ($ionicHistory.backView()) {
+      return $ionicHistory.goBack();
+    }
+
+    $state.go("tab.newsletter", {
+      newsletterId: $scope.newsletterId
+    }, { location: "replace" });
+  };
+
+  $scope.save = function (form) {
+    $scope.ajaxing = $scope.indicateAjaxing(true);
+
+    Newsletter.updateBlock($scope.newsletterId, $scope.block.id, $scope.formData)
+      .then(function (response) {
+        MessageService.success("Success!");
+
+        backToParent();
+      }, function (response) {
+        MessageService.responseError(response);
+      })
+      .finally(function () {
+        $scope.initialized = true;
+        $scope.ajaxing = $scope.indicateAjaxing(false);
+      });
+  };
+
+  var $popoverScope = $scope.$new();
+
+  function _destroy() {
+    $scope.ajaxing = $scope.indicateAjaxing(true);
+
+    Newsletter.destroyBlock($scope.newsletterId, $scope.blockId)
+      .then(function (response) {
+        MessageService.success("Deleted.")
+
+        $state.go("tab.newsletter", {
+          newsletterId: $scope.newsletterId
+        }, { location: "replace" });
+      }, function (response) {
+        MessageService.responseError(response);
+      })
+      .finally(function () {
+        $scope.ajaxing = $scope.indicateAjaxing(false);
+      });
+  }
+
+  $scope.destroy = function () {
+    var title = "Delete";
+
+    if ($scope.block.block_type == 'beer') {
+      title += " Beer";
+    } else {
+      title += " Content";
+    }
+
+    $ionicPopup.confirm({
+      title: title,
+      template: "Are you sure you want to delete this?",
+      okText: "Delete",
+      okType: "button-assertive"
+    }).then(function (res) {
+      if (!res) { return; }
+
+      _destroy();
+    });
+  };
+
+  $ionicPopover.fromTemplateUrl("templates/popovers/newsletter-block-detail.html", {
+    scope: $popoverScope
+  }).then(function (popover) {
+    $scope.popover = popover;
+  });
+
+  $scope.showOptionsMenu = function ($event) {
+    $scope.popover.show($event);
+  };
+
+  $scope.hideOptionsMenu = function() {
+    $scope.popover.hide();
+  };
   // $scope.$on("$ionicView.enter", function(e) {
   //   $scope.refresh();
   // });

@@ -24,6 +24,7 @@ gem 'omniauth-foursquare'
 gem 'omniauth-untappd'
 ## Email
 gem 'sendgrid-ruby'
+gem 'premailer'
 # Use SCSS for stylesheets
 gem 'bootstrap-sass'
 gem 'sass-rails', '~> 5.0.6'

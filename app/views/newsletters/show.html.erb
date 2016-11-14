@@ -1,0 +1,189 @@
+<%
+	gutter_width = 20
+	block_width = 300
+	outer_width = block_width * 2 + gutter_width * 3 + 4 # idk
+%>
+
+<style>
+	body {
+		margin: 0 !important;
+		padding: 0;
+		background-color: #ffffff;
+	}
+	table {
+		border-spacing: 0;
+		font-family: sans-serif;
+		color: #333333;
+
+		-premailer-cellpadding: 0;
+		-premailer-cellspacing: 0;
+		border-collapse: collapse;
+		border: 0;
+	}
+	td {
+		padding: 0;
+	}
+	img {
+		border: 0;
+	}
+	div[style*="margin: 16px 0"] {
+		margin:0 !important;
+	}
+	.wrapper {
+		width: 100%;
+		table-layout: fixed;
+		-webkit-text-size-adjust: 100%;
+		-ms-text-size-adjust: 100%;
+	}
+	.webkit {
+		max-width: 600px;
+		margin: 0 auto;
+	}
+	.outer {
+		Margin: 0 auto; /* "I always capitalise Margin so that Outlook.com won’t strip it out" */
+		width: 100%;
+		max-width: 660px;
+	}
+
+	/* two column layout*/
+	.one-column,
+	.two-column {
+		text-align: center;
+		font-size: 0;
+	}
+
+	.one-column .column,
+	.two-column .column {
+		width: 100%;
+		margin-right: 20px;
+		display: inline-block;
+		vertical-align: top;
+		text-align: left;
+	}
+
+	.one-column .column {
+		max-width: 620px;
+	}
+
+	.two-column .column {
+		background-color: #ffffff;
+		max-width: 300px;
+	}
+
+	.contents {
+		width: 100%;
+	}
+
+	/* brewline styles */
+	.wrapper {
+		background-color: <%= NewslettersHelper::EMAIL_EXTERIOR_COLOR %>;
+	}
+
+	.webkit {
+		max-width: 660px; /* override above */
+		padding: 20px 0 20px 20px;
+		background-color: <%= NewslettersHelper::EMAIL_BACKGROUND_COLOR %>;
+	}
+
+	.wrapper .column {
+		margin-bottom: 20px;
+	}
+
+	.inner {
+		font-size: 16px;
+	}
+</style>
+
+<center class="wrapper">
+  <div class="webkit">
+
+<!--[if (gte mso 9)|(IE)]>
+<table width="600" align="center">
+<tr>
+<td>
+<![endif]-->
+		<table class="outer" align="center">
+			<tr>
+				<td class="one-column">
+
+					<table width="100%">
+						<tr>
+							<td class="inner contents">
+
+								<%= render partial: 'shared/venue_header', locals: { venue: @resource.venue } %>
+
+							</td>
+						</tr>
+					</table>
+
+				</td>
+			</tr>
+
+			<% ptr = @resource.blocks.to_enum %>
+			<% loop do %>
+				<% block = ptr.next rescue break %>
+				<% if block.is_a?(ContentNewsletterBlock) %>
+					<tr>
+						<td class="one-column">
+							<div class="column">
+								<table width="100%">
+									<tr>
+										<td class="inner contents">
+											<%= render partial: 'shared/newsletter_block__content', locals: { block: block } %>
+										</td>
+									</tr>
+								</table>
+							</div>
+						</td>
+					</tr>
+				<% else %>
+					<tr>
+						<td class="two-column">
+							<!--[if (gte mso 9)|(IE)]>
+							<table width="100%">
+							<tr>
+							<td width="50%" valign="top">
+							<![endif]-->
+								<div class="column">
+									<table width="100%">
+										<tr>
+											<td class="inner">
+												<%= render partial: 'shared/newsletter_block__beer', locals: { block: block } %>
+											</td>
+										</tr>
+									</table>
+								</div>
+							<!--[if (gte mso 9)|(IE)]>
+							</td><td width="50%" valign="top">
+							<![endif]-->
+								<% block = (ptr.next rescue break) if ptr.peek.is_a?(BeerNewsletterBlock) %>
+								<div class="column">
+									<table width="100%">
+										<tr>
+											<td class="inner">
+												<%= render partial: 'shared/newsletter_block__beer', locals: { block: block } %>
+											</td>
+										</tr>
+									</table>
+								</div>
+							<!--[if (gte mso 9)|(IE)]>
+							</td>
+							</tr>
+							</table>
+							<![endif]-->
+						</td>
+					</tr>
+				<% end %>
+			<% end %>
+
+		</table>
+<!--[if (gte mso 9)|(IE)]>
+</td>
+</tr>
+</table>
+<![endif]-->
+
+	</div>
+</center>
+
+<pre><%= JSON.pretty_generate(@resource.as_json) %></pre>

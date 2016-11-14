@@ -1,6 +1,4 @@
 class Beer < BreweryDb
-  extend Base
-
   DEFAULT_PARAMS = {
     withBreweries: 'Y'
   }.freeze
@@ -12,6 +10,22 @@ class Beer < BreweryDb
 
   # Similar to... for discovering new beers
   # has_many :similar_beers, class_name: 'Beer'
+
+  def image(size = 'large')
+    response['labels']['medium']
+  end
+
+  def name
+    response['name']
+  end
+
+  def brewery_name
+    response['breweries'].first['name']
+  end
+
+  def ratings
+    []
+  end
 
   class << self
     protected

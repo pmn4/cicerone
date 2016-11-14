@@ -19,78 +19,78 @@ class ApplicationController < ActionController::Base
   end
 
   def index
-    resources = list_resources(params)
+    @resources = list_resources(params)
 
-    respond_with resources.as_json(as_json_list_options)
+    enforce_listable!(@resources)
+
+    respond_with(@resources) do |format|
+      format.json { render json: @resources.as_json(as_json_list_options) }
+    end
   end
 
   def create
-    resource = self.class.model_class.new(resource_params)
-    resource.created_by = current_user
+    @resource = self.class.model_class.new(resource_params)
+    @resource.created_by = current_user
 
-    unless resource.createable_by?(current_user, resource_params)
-      raise PermissionError, :create
-    end
+    enforce_createable!(@resource)
 
-    create_resource!(resource, resource_params)
+    create_resource!(@resource, resource_params)
 
-    respond_with(resource) do |format|
-      format.json { render json: resource.as_json(as_json_options) }
+    respond_with(@resource) do |format|
+      format.json { render json: @resource.as_json(as_json_options) }
     end
   rescue PermissionError => e
-    permission_error!(resource, e)
+    permission_error!(@resource, e)
   rescue ActiveRecord::RecordInvalid => e
-    validation_error!(resource, e)
+    validation_error!(@resource, e)
   rescue ActiveRecord::RecordNotUnique => e
-    duplicate_entry!(resource, e)
+    duplicate_entry!(@resource, e)
   end
 
   def show
-    resource = find_resource(params[:id])
+    @resource = find_resource(params[:id])
 
-    unless resource.readable_by?(current_user)
-      raise PermissionError, :read
-    end
+    enforce_readable!(@resource)
 
-    respond_with(resource) do |format|
-      format.json { render json: resource.as_json(as_json_options) }
+    respond_with(@resource) do |format|
+      format.json { render json: @resource.as_json(as_json_options) }
     end
   rescue PermissionError => e
-    permission_error!(resource, e)
+    permission_error!(@resource, e)
   rescue ActiveRecord::RecordNotFound => e
-    not_found!(resource, e)
+    not_found!(@resource, e)
   end
 
   def update
-    resource = self.class.model_class.find(params[:id])
+    @resource = find_resource(params[:id])
 
-    unless resource.updateable_by?(current_user)
-      raise PermissionError, :update
+    enforce_updateable!(@resource)
+
+    @resource.assign_attributes(resource_params)
+
+    update_resource!(@resource, resource_params)
+
+    respond_with(@resource) do |format|
+      format.json { render json: @resource.as_json(as_json_options) }
     end
-
-    update_resource!(resource, resource_params)
-
-    respond_with resource.as_json(as_json_options)
   rescue PermissionError => e
-    permission_error!(resource, e)
+    permission_error!(@resource, e)
   rescue ActiveRecord::RecordInvalid => e
-    validation_error!(resource, e)
+    validation_error!(@resource, e)
   rescue ActiveRecord::RecordNotFound => e
-    not_found!(resource, e)
+    not_found!(@resource, e)
   rescue ActiveRecord::RecordNotUnique => e
-    duplicate_entry!(resource, e)
+    duplicate_entry!(@resource, e)
   end
 
   def destroy
-    resource = self.class.model_class.find(params[:id])
+    @resource = find_resource(params[:id])
 
-    unless resource.deletable_by?(current_user)
-      raise PermissionError, :delete
-    end
+    enforce_deleteable!(@resource)
 
-    destroy_resource!(resource)
+    destroy_resource!(@resource)
 
-    respond_to do |format|
+    respond_with(@resource) do |format|
       format.json { head :no_content }
 
       format.html do
@@ -99,7 +99,7 @@ class ApplicationController < ActionController::Base
       end
     end
   rescue PermissionError => e
-    permission_error!(resource, e)
+    permission_error!(@resource, e)
   end
 
   protected
@@ -118,6 +118,34 @@ class ApplicationController < ActionController::Base
     params
       .require(self.class.resource_param)
       .permit(self.class.model_class.column_names)
+  end
+
+  def enforce_listable!(_resources)
+    # noop
+  end
+
+  def enforce_createable!(resource)
+    return if resource.createable_by?(current_user, resource_params)
+
+    raise PermissionError, :create
+  end
+
+  def enforce_readable!(resource)
+    return if resource.readable_by?(current_user)
+
+    raise PermissionError, :read
+  end
+
+  def enforce_updateable!(resource)
+    return if resource.updateable_by?(current_user)
+
+    raise PermissionError, :update
+  end
+
+  def enforce_deleteable!(resource)
+    return if resource.deletable_by?(current_user)
+
+    raise PermissionError, :delete
   end
 
   def list_resources(params)
@@ -145,7 +173,7 @@ class ApplicationController < ActionController::Base
   end
 
   def permission_error!(resource, error)
-    fail!(resource, error.message, :unauthorized)
+    fail!(resource, error.message, :forbidden)
   end
 
   def validation_error!(resource, error)

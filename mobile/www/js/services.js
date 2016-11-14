@@ -73,7 +73,7 @@ angular.module("starter.services", [])
       });
     },
 
-    updateBlock: function (resourceId, resourceObj) {
+    updateBlock: function (resourceId, blockId, resourceObj) {
       return $http({
         method: "PUT",
         url: AppSettings.apiHost + "/newsletters/" + resourceId + "/blocks/" + blockId,
@@ -400,7 +400,7 @@ angular.module("starter.services", [])
           deferred.resolve(response);
 
           if (modal) {
-            modal.hide();
+            modal.close();
           } else {
             $injector("$window").location.reload(true);
           }

@@ -1,6 +1,7 @@
 class Newsletter < ActiveRecord::Base
   extend Base
 
+  belongs_to :venue
   has_many :newsletter_blocks
   has_many :newsletter_emails
 

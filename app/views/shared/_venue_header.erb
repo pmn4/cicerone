@@ -1,0 +1,22 @@
+
+<h1>Venue Header</h1>
+
+<% return if venue.nil? %>
+
+<pre><%= JSON.pretty_generate(venue.as_json) %></pre>
+
+<div class="venue-details">
+	<div clsas="venue-image">
+	</div>
+
+	<h1>
+		Venue Name
+	</h1>
+
+	<div class="venue-location">
+	</div>
+
+	<div class="venue-social">
+		Facebook, Untappd, Foursqure, Twitter, YouTube, etc.
+	</div>
+</div>

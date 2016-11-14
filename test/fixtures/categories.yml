@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  venue: 
+  name: MyString
+  color: MyString
+  note: MyString
+
+two:
+  venue: 
+  name: MyString
+  color: MyString
+  note: MyString

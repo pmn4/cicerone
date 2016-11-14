@@ -25,5 +25,9 @@ Rails.application.routes.draw do
 
   resources :upcs, only: :index, controller: :brewery_db_upcs
 
+  resources :venues, only: :none do
+    resources :categories, controller: 'venue_categories'
+  end
+
   root to: 'pages#index'
 end

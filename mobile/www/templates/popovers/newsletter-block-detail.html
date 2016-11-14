@@ -1,0 +1,23 @@
+<ion-popover-view>
+  <ion-content>
+    <div class="list">
+      <ion-item class="item-divider">
+        Options
+      </ion-item>
+
+      <ion-item class="assertive" ng-click="destroy()">
+        <i class="icon ion-ios-trash"></i>
+
+        Delete
+
+        <span ng-show="block.block_type == 'Beer'">
+          Beer
+        </span>
+
+        <span ng-hide="block.block_type == 'Beer'">
+          Content
+        </span>
+      </ion-item>
+    </div>
+  </ion-content>
+</ion-popover-view>

@@ -1,0 +1,33 @@
+<% return if block.nil? || block.beer.nil? %>
+
+<div style="padding:10px;">
+	<h4 style="font-size:12px;text-transform:uppercase;margin:5px 0;color:#999;font-weight:normal;">
+		<%= block.beer.brewery_name %>
+	</h4>
+
+	<h2 style="font-size:18px;margin:5px 0;">
+		<%= block.beer.name %>
+	</h2>
+
+	<img src="<%= block.beer.image('medium') %>" width="80%" style="margin: 10px 10%;" />
+
+	<ul class="ratings">
+		<% block.beer.ratings.each do |rating| %>
+			<li>
+				<span class="label">
+					<%= rating.label %>
+				</span>
+				<strong>
+					<%= rating.rating %>
+				</strong>
+			</li>
+		<% end %>
+	</ul>
+
+	<div>
+		<%= block.message %>
+	</div>
+</div>
+<!--
+<pre><%= JSON.pretty_generate(block.as_json) %></pre>
+-->

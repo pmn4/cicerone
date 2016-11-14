@@ -1,6 +1,4 @@
 class Upc < BreweryDb
-  extend Base
-
   self.plural_resource_path = :'search/upc'
 
   class << self
