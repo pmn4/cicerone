@@ -61,7 +61,10 @@ class BreweryDb < ActiveRecord::Base
   end
 
   class << self
-    attr_accessor :singular_resource_path, :plural_resource_path
+    attr_accessor \
+      :singular_resource_path,
+      :plural_resource_path,
+      :resource_search_type
 
     def create_by_key(key)
       source_find(key, default_find_params).tap(&:save!)
@@ -86,6 +89,14 @@ class BreweryDb < ActiveRecord::Base
         response: datum,
         response_json: datum.to_json
       }.reverse_merge(attributes || {}))
+    end
+
+    def source_search(query, params = {})
+      url = "http://api.brewerydb.com/v2/search"
+
+      response = get(url, params.merge(q: query, type: resource_search_type))
+
+      from_response(response)
     end
 
     def source_list(params = {})

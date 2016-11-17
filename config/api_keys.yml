@@ -1,4 +1,6 @@
 defaults: &defaults
+  brewery_db:
+    api_key: '86163c0eea64ef5397768fe44bdd5071'
   foursquare:
     api_key: 'TQWJCSXTG2SDUZKA1VG1XFPMU3WUKSV2KDDJN1F2HUR3RWLX'
     api_secret: 'HZLOF3O1NGZGLYWSMFL0JD1KG1BZ0DBVKLLF1LJSJOQQMW1T'
@@ -13,6 +15,8 @@ test:
   <<: *defaults
 
 production:
+  brewery_db:
+    api_key: <%= ENV['BREWERYDB_APP_ID'] %>
   foursquare:
     api_key: <%= ENV['FOURSQUARE_APP_ID'] %>
     api_secret: <%= ENV['FOURSQUARE_APP_SECRET'] %>

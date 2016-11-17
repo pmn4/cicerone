@@ -5,6 +5,7 @@ class Beer < BreweryDb
 
   self.singular_resource_path = :beer
   self.plural_resource_path = :beers
+  self.resource_search_type = :beer
 
   has_many :beer_newsletter_blocks
 

@@ -1,3 +1,6 @@
+# there's got to be a better way
+API_KEYS = YAML::load_file("#{ Rails.root }/config/api_keys.yml")[Rails.env]
+
 class ApplicationController < ActionController::Base
   class PermissionError < StandardError; end
 
@@ -202,6 +205,6 @@ class ApplicationController < ActionController::Base
   end
 
   def prepare_brewery_db
-    BreweryDb.token = 'e849e0b752f3317ef5561324884f5271'
+    BreweryDb.token = API_KEYS['brewery_db']['api_key']
   end
 end

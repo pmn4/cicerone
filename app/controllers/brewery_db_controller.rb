@@ -23,12 +23,7 @@ class BreweryDbController < ApplicationController
   protected
 
   def find_resources
-    request_params = {}
-    if params[:name].present?
-      request_params[:name] = "*#{ params[:name].gsub(' ', '*') }*"
-    end
-
-    self.class.model_class.source_list(request_params)
+    self.class.model_class.source_search(params[:name])
   end
 
   def find_resource(id)
