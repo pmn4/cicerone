@@ -124,19 +124,19 @@ angular.module("starter.directives", [])
 
       $scope.beerScan = function () {
         $scope.formData.inputType = "scan";
-        $scope.formData.contentType = "beer";
+        $scope.formData.block_type = "Beer";
       };
 
       $scope.beerSearch = function () {
         $scope.formData.inputType = "search";
-        $scope.formData.contentType = "beer";
+        $scope.formData.block_type = "Beer";
 
         // open search modal
       };
 
       $scope.createContent = function () {
         $scope.formData.inputType = "content";
-        $scope.formData.contentType = "content";
+        $scope.formData.block_type = "Content";
       };
     }
   };

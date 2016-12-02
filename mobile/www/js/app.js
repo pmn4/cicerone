@@ -110,7 +110,7 @@ angular.module("starter", [
   })
 
   .state("tab.newsletterBlockNew", {
-    url: "/newsletters/:newsletterId/block/new?:contentType&:beerKey",
+    url: "/newsletters/:newsletterId/block/new?:block_type&:beerKey", // nevermind the mixed cases
     views: {
       "tab-newsletters": {
         templateUrl: "templates/block-edit.html",

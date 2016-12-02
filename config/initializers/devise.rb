@@ -1,4 +1,5 @@
-API_KEYS = YAML::load_file("#{ Rails.root }/config/api_keys.yml")[Rails.env]
+file = Pathname.new("#{ Rails.root }/config/api_keys.yml")
+API_KEYS = YAML.load(ERB.new(file.read).result)[Rails.env].freeze
 
 # Use this hook to configure devise mailer, warden hooks and so forth.
 # Many of these configuration options can be set straight in your model.

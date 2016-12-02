@@ -304,6 +304,18 @@ angular.module("starter.controllers", [])
     beer_key: $stateParams.beerKey
   };
 
+  if (!$scope.formData.content_type) {
+    $scope.formData.block_type = $stateParams.beerKey ? "Beer" : "Content";
+  }
+
+  $scope.ui = {};
+  $scope.$watch("formData.block_type", function (type) {
+    $scope.ui.isBeerBlock = type == "Beer";
+    $scope.ui.messageLabel = $scope.ui.isBeerBlock ?
+      'Say something about this beer' :
+      'Add some text...';
+  });
+
   if ($scope.formData.beer_key) {
     Beer.find($scope.formData.beer_key)
       .then(function (response) {
@@ -330,7 +342,7 @@ angular.module("starter.controllers", [])
       fn = function (newsletterId, formData) {
         return Newsletter.updateBlock(newsletterId, $scope.blockId, formData);
       };
-    } else if ($scope.formData.block_type == "beer") {
+    } else if ($scope.formData.block_type == "Beer") {
       fn = Newsletter.createBeerBlock;
     } else {
       fn = Newsletter.createContentBlock;
@@ -429,7 +441,7 @@ angular.module("starter.controllers", [])
   $scope.destroy = function () {
     var title = "Delete";
 
-    if ($scope.block.block_type == 'beer') {
+    if ($scope.block.block_type == 'Beer') {
       title += " Beer";
     } else {
       title += " Content";

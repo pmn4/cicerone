@@ -1,5 +1,6 @@
 # there's got to be a better way
-API_KEYS = YAML::load_file("#{ Rails.root }/config/api_keys.yml")[Rails.env]
+file = Pathname.new("#{ Rails.root }/config/api_keys.yml")
+API_KEYS = YAML.load(ERB.new(file.read).result)[Rails.env].freeze
 
 class ApplicationController < ActionController::Base
   class PermissionError < StandardError; end

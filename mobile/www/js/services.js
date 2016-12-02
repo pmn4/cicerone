@@ -343,6 +343,7 @@ angular.module("starter.services", [])
     };
 
     browserRef.addEventListener("loadstart", function (event) {
+      // with broswer hidden, check for sign_in/sign_up, then bring it to foreground
       if ((event.url).indexOf(AppSettings.oauthRedirectUri) !== 0) { return; }
 
       browserRef.removeEventListener("exit", fnCancelled);
